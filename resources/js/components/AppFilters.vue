@@ -4,7 +4,7 @@
             v-bind:class="filter.active ? 'button_active' : null"
             v-for="filter in filters"
             :key="filter.id"
-            @click="$emit('select', filter)"
+            @click="selectFilter(filter)"
         >
             {{ filter.name }}
         </my-button>
@@ -17,6 +17,11 @@ export default {
         filters: {
             type: Array,
             required: true,
+        },
+    },
+    methods: {
+        selectFilter(filter) {
+            this.$emit("select", filter);
         },
     },
 };

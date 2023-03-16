@@ -1,5 +1,4 @@
 :root {
-
     --header-height: 3.5rem;
     /*========== Colors ==========*/
     --first-color: #2866c4;
@@ -7,12 +6,12 @@
     --button-color: #2f5a9a;
     --button-color-alt: #2866c4;
     --title-color: #2f5a9a;
-    --text-color: hsl(0, 0%, 35%);
-    --text-color-light: hsl(0, 0%, 55%);
-    --body-color:#f7f7f7;
+    --text-color: #d1dede;
+    --text-color-light: #e2eded;
+    --body-color: #f7f7f7;
 }
 * {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -20,10 +19,15 @@
 a {
     text-decoration: none;
 }
-h1,h2,h3,h4,h5,h6{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--title-color);
 }
-.container{
+.container {
     width: 100%;
     max-width: 1140px;
     margin: 0 auto;
@@ -36,7 +40,7 @@ h1,h2,h3,h4,h5,h6{
     background-color: var(--second-color);
     transition: 0.4s;
 }
-.main{
+.main {
     min-height: 100vh;
     background: var(--body-color);
 }
