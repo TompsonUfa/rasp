@@ -1,10 +1,12 @@
 <template>
     <div class="select-box">
-        <input type="checkbox" class="select-box__view" />
+        <input type="checkbox" class="select-box__view" v-model="checked" />
         <div class="select-box__title">
-            <span>Выбрать</span> <i class="bx bx-chevron-down"></i>
+            <span>{{ toggleOption }}</span>
+            <i class="bx bx-chevron-down"></i>
         </div>
         <select-options
+            @option="option"
             v-for="filter in findActiveFilter"
             :key="filter.id"
             :options="filter.options"
@@ -23,11 +25,31 @@ export default {
             required: true,
         },
     },
+    data() {
+        return {
+            checked: false,
+            activeOption: null,
+        };
+    },
     computed: {
         findActiveFilter() {
             return this.filters.filter((element) => {
+                this.activeOption = null;
                 return element.active;
             });
+        },
+        toggleOption() {
+            if (this.activeOption) {
+                return this.activeOption;
+            } else {
+                return "Выбрать из списка";
+            }
+        },
+    },
+    methods: {
+        option(event) {
+            this.checked = false;
+            this.activeOption = event.name;
         },
     },
 };
@@ -82,6 +104,7 @@ export default {
         overflow-y: auto;
         border: 1px solid var(--text-color-light);
         border-color: #eaf1f1 #e4eded #dbe7e7 #e4eded;
+        z-index: 1;
     }
 
     &__view:checked ~ &__options {

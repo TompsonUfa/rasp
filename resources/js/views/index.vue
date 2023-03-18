@@ -1,6 +1,6 @@
 <template>
     <app-nav></app-nav>
-    <app-content :filters="filters" @select="select"></app-content>
+    <app-content :date="date" :filters="filters" @select="select"></app-content>
 </template>
 
 <script>
@@ -35,6 +35,28 @@ export default {
                         { id: 3, name: "Третий преподаватель" },
                         { id: 4, name: "Четвертый преподаватель" },
                     ],
+                },
+            ],
+            date: [
+                {
+                    id: 1,
+                    name: "На сегодня",
+                    value: "today",
+                },
+                {
+                    id: 2,
+                    name: "На завтра",
+                    value: "tomorrow",
+                },
+                {
+                    id: 3,
+                    name: "На неделю",
+                    value: "week",
+                },
+                {
+                    id: 4,
+                    name: "На следующую неделю",
+                    value: "nextWeek",
                 },
             ],
         };

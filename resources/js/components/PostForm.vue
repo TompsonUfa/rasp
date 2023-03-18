@@ -1,15 +1,24 @@
 <template>
     <form method="post" class="form">
         <select-box :filters="filters" class="form__select"></select-box>
+        <date-box :date="date" class="form__date"></date-box>
+        <div class="form__controls">
+            <my-button class="form__sumbit">Отобразить</my-button>
+        </div>
     </form>
 </template>
 
 <script>
 import SelectBox from "@/components/SelectBox.vue";
+import DateBox from "@/components/DateBox.vue";
 export default {
-    components: { SelectBox },
+    components: { SelectBox, DateBox },
     props: {
         filters: {
+            type: Array,
+            required: true,
+        },
+        date: {
             type: Array,
             required: true,
         },
@@ -18,7 +27,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form__select {
-    margin-top: 30px;
+.form {
+    &__select {
+        margin-top: 30px;
+    }
+    &__date {
+        padding: 0 10px;
+    }
+    &__controls {
+        text-align: center;
+    }
 }
 </style>

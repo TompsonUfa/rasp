@@ -8,7 +8,7 @@
                         v-bind="$attrs"
                         :filters="filters"
                     ></app-filters>
-                    <post-form :filters="filters"></post-form>
+                    <post-form :date="date" :filters="filters"></post-form>
                 </div>
             </div>
         </section>
@@ -25,6 +25,10 @@ export default {
     },
     props: {
         filters: {
+            type: Array,
+            required: true,
+        },
+        date: {
             type: Array,
             required: true,
         },

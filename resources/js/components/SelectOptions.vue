@@ -1,6 +1,7 @@
 <template>
     <div>
         <select-option
+            @click="$emit('option', option)"
             v-for="option in options"
             :key="option.key"
             class="select-box__option"
@@ -20,5 +21,4 @@ export default {
     },
 };
 </script>
-
 <style lang="scss" scoped></style>
