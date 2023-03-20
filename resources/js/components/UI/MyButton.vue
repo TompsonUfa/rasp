@@ -12,19 +12,18 @@ export default {
 .button {
     cursor: pointer;
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 500;
     padding: 10px 15px;
-    background: none;
-    color: var(--button-color);
-    border: 3px solid var(--button-color);
+    color: var(--second-color);
+    background: var(--button-color);
+    border: none;
     transition: 0.3s;
+    border-radius: 10px;
     &:hover {
-        border: 3px solid var(--button-color-alt);
         background: var(--button-color-alt);
         color: #fff;
     }
     &_active {
-        border: 3px solid var(--button-color-alt);
         background: var(--button-color-alt);
         color: #fff;
     }

@@ -2,8 +2,8 @@
     <main class="main">
         <section class="section schedule">
             <div class="container">
-                <h1 class="schedule__title">Расписание занятий</h1>
                 <div class="schedule__content">
+                    <h1 class="schedule__title">Расписание занятий</h1>
                     <app-filters
                         v-bind="$attrs"
                         :filters="filters"

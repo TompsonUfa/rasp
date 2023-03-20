@@ -1,9 +1,7 @@
 <template>
     <header class="header" id="header">
         <nav class="nav container">
-            <a href="https://www.bifk.ru/" class="nav__logo">
-                БИФК <i class="bx bx-home-alt"></i
-            ></a>
+            <a href="https://www.bifk.ru/" class="nav__logo"> BIFK </a>
             <i class="bx bx-moon change-theme" id="theme-button"></i>
         </nav>
     </header>

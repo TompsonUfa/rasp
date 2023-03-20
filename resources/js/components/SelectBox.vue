@@ -82,9 +82,8 @@ export default {
         justify-content: space-between;
         padding: 12px 14px;
         border: 1px solid var(--text-color-light);
-        border-color: #eaf1f1 #e4eded #dbe7e7 #e4eded;
         color: #000;
-        font-weight: 500;
+        border-radius: 10px;
         i {
             pointer-events: none;
             font-size: 30px;
@@ -100,11 +99,11 @@ export default {
         left: 0;
         background-color: var(--second-color);
         width: 100%;
-        height: 300px;
+        max-height: 300px;
         overflow-y: auto;
         border: 1px solid var(--text-color-light);
-        border-color: #eaf1f1 #e4eded #dbe7e7 #e4eded;
         z-index: 1;
+        border-radius: 10px;
     }
 
     &__view:checked ~ &__options {

@@ -19,9 +19,8 @@ export default {
 <style lang="scss" scoped>
 $radioSize: 22px;
 $radioBorder: #d1d7e3;
-$radioActive: #5d9bfb;
+$radioActive: var(--button-color-alt);
 .radio {
-    margin: 16px 0;
     display: block;
     cursor: pointer;
     input {
