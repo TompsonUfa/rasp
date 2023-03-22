@@ -18,6 +18,16 @@ export default {};
     overflow: hidden;
     max-height: 44px;
     transition: 0.3s ease all;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+    line-height: 1;
+    padding: 12px 14px;
+    transition: 0.3s;
+    cursor: pointer;
+    i {
+        font-size: 20px;
+    }
     &:hover {
         color: #fff;
         background-color: var(--button-color-alt);
@@ -44,11 +54,11 @@ export default {};
         opacity: 0;
         z-index: 3;
         &:checked {
-            color: var(--second-color);
+            color: var(--text-color);
         }
         &:checked ~ .option__bg,
         &:checked ~ .option__text {
-            color: var(--second-color);
+            color: var(--text-color);
             background-color: var(--button-color-alt);
         }
     }
@@ -67,6 +77,12 @@ export default {};
         width: 100%;
         height: 100%;
         z-index: 1;
+    }
+}
+
+.dark {
+    .option {
+        color: var(--text-color);
     }
 }
 </style>

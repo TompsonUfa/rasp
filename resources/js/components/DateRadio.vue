@@ -1,6 +1,11 @@
 <template>
-    <label class="radio" v-for="el in date" :key="el.key">
-        <input type="radio" name="date" value="el.value" />
+    <label class="radio" v-for="(el, index) in date" :key="el.key">
+        <input
+            type="radio"
+            name="date"
+            :value="el.value"
+            :checked="index == 0"
+        />
         <span>{{ el.name }}</span>
     </label>
 </template>
@@ -18,7 +23,7 @@ export default {
 
 <style lang="scss" scoped>
 $radioSize: 22px;
-$radioBorder: #d1d7e3;
+$radioBorder: var(--border-color);
 $radioActive: var(--button-color-alt);
 .radio {
     display: block;

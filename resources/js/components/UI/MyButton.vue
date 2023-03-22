@@ -14,7 +14,7 @@ export default {
     font-size: 17px;
     font-weight: 500;
     padding: 10px 15px;
-    color: var(--second-color);
+    color: #fff;
     background: var(--button-color);
     border: none;
     transition: 0.3s;

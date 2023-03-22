@@ -97,10 +97,13 @@ export default {};
         border-radius: 15px;
         font-size: 17px;
         border-radius: 15px;
+        &:last-child {
+            margin-bottom: 0;
+        }
         th {
             // border: 1px solid var(--text-color-light);
             color: var(--title-color);
-            padding: 15px;
+            padding: 20px 15px;
         }
         tbody {
             tr:nth-child(odd) {
@@ -109,15 +112,28 @@ export default {};
         }
         td {
             text-align: center;
-            color: #121212;
+            color: var(--text-color);
             // border: 1px solid var(--text-color-light);
-            padding: 15px;
+            padding: 20px 15px;
             span {
                 font-size: 16px;
                 margin-top: 2px;
                 display: block;
                 color: #000;
                 opacity: 0.7;
+            }
+        }
+    }
+}
+.dark {
+    .result {
+        &__table {
+            background: var(--body-color);
+            td {
+                color: var(--text-color);
+                span {
+                    color: inherit;
+                }
             }
         }
     }

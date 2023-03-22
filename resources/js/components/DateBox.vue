@@ -17,4 +17,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.dark {
+    .date {
+        background: var(--body-color);
+        color: #fff;
+    }
+}
+</style>

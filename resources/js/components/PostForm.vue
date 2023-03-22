@@ -33,7 +33,7 @@ export default {
     }
     &__date {
         padding: 20px 14px;
-        border: 1px solid var(--text-color-light);
+        border: 1px solid var(--border-color);
         border-radius: 10px;
         margin-top: 30px;
         display: flex;

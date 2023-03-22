@@ -7,8 +7,8 @@
     --button-color: #ff3c009e;
     --button-color-alt: #ff3c00;
     --title-color: #ff3c00;
-    --text-color: #d1dede;
-    --text-color-light: #e2eded;
+    --text-color: #000;
+    --border-color: #d1d7e3;
     --body-color: #f7f7f7;
 }
 :root .dark {
@@ -19,9 +19,13 @@
     --button-color: #ff3c009e;
     --button-color-alt: #ff3c00;
     --title-color: #fff;
-    --text-color: #d1dede;
+    --text-color: #fff;
     --text-color-light: #e2eded;
     --body-color: #1f2023;
+    --border-color: none;
+}
+body {
+    scroll-behavior: smooth;
 }
 * {
     font-family: "Roboto", sans-serif;
@@ -53,11 +57,12 @@ h6 {
     background-color: var(--second-color);
     transition: 0.4s;
     z-index: 500;
-    border-bottom: 1px solid var(--text-color-light);
+    border-bottom: 1px solid var(--body-color);
 }
 .main {
     min-height: 100vh;
     background: var(--body-color);
+    transition: 0.4s;
 }
 .section {
     padding: 6.5rem 0 1rem;

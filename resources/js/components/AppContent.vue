@@ -51,7 +51,7 @@ export default {
     &__content {
         background: var(--second-color);
         border-radius: 15px;
-        padding: 30px 45px;
+        padding: 45px;
     }
     &__filters {
         display: flex;
@@ -62,7 +62,7 @@ export default {
         margin-top: 30px;
         background: var(--second-color);
         border-radius: 15px;
-        padding: 30px 45px;
+        padding: 45px;
     }
 }
 </style>

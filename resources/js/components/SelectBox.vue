@@ -55,7 +55,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .select-box {
     position: relative;
     width: 100%;
@@ -81,13 +81,13 @@ export default {
         align-items: center;
         justify-content: space-between;
         padding: 12px 14px;
-        border: 1px solid var(--text-color-light);
-        color: #000;
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
         border-radius: 10px;
         i {
             pointer-events: none;
             font-size: 30px;
-            color: var(--text-color);
+            color: var(--border-color);
             transition: 0.3s;
         }
     }
@@ -101,7 +101,7 @@ export default {
         width: 100%;
         max-height: 300px;
         overflow-y: auto;
-        border: 1px solid var(--text-color-light);
+        border: 1px solid var(--border-color);
         z-index: 1;
         border-radius: 10px;
     }
@@ -109,17 +109,15 @@ export default {
     &__view:checked ~ &__options {
         display: block;
     }
-
-    &__option {
-        display: flex;
-        align-items: center;
-        column-gap: 20px;
-        line-height: 1;
-        padding: 12px 14px;
-        transition: 0.3s;
-        cursor: pointer;
-        i {
-            font-size: 20px;
+}
+.dark {
+    .select-box {
+        &__title {
+            background: var(--body-color);
+            color: var(--text-color);
+        }
+        &__options {
+            background: var(--body-color);
         }
     }
 }
