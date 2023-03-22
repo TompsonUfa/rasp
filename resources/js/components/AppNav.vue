@@ -2,13 +2,23 @@
     <header class="header" id="header">
         <nav class="nav container">
             <a href="https://www.bifk.ru/" class="nav__logo"> BIFK </a>
-            <i class="bx bx-moon change-theme" id="theme-button"></i>
+            <div @click="$emit('changeTheme')" class="change-theme">
+                <i v-if="themeMode === 'dark'" class="bx bx-sun"></i>
+                <i v-else class="bx bx-moon"></i>
+            </div>
         </nav>
     </header>
 </template>
 
 <script>
-export default {};
+export default {
+    props: {
+        themeMode: {
+            type: String,
+            required: true,
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>

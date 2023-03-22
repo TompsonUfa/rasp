@@ -10,6 +10,7 @@
                     ></app-filters>
                     <post-form :date="date" :filters="filters"></post-form>
                 </div>
+                <app-result class="schedule__result"></app-result>
             </div>
         </section>
     </main>
@@ -18,10 +19,12 @@
 <script>
 import AppFilters from "@/components/AppFilters.vue";
 import PostForm from "@/components/PostForm.vue";
+import AppResult from "@/components/AppResult.vue";
 export default {
     components: {
         AppFilters,
         PostForm,
+        AppResult,
     },
     props: {
         filters: {
@@ -35,7 +38,6 @@ export default {
     },
 };
 </script>
-
 <style lang="scss" scoped>
 .schedule {
     &__title {
@@ -55,6 +57,12 @@ export default {
         display: flex;
         justify-content: center;
         gap: 30px;
+    }
+    &__result {
+        margin-top: 30px;
+        background: var(--second-color);
+        border-radius: 15px;
+        padding: 30px 45px;
     }
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
-    <app-nav></app-nav>
+    <app-nav :themeMode="themeMode" @change-theme="changeTheme"></app-nav>
     <app-content :date="date" :filters="filters" @select="select"></app-content>
+    <my-loader v-if="this.loading"></my-loader>
 </template>
 
 <script>
@@ -59,7 +60,19 @@ export default {
                     value: "nextWeek",
                 },
             ],
+            loading: false,
+            themeMode: "",
         };
+    },
+    watch: {
+        loading: function () {
+            document.body.style.overflow = this.loading ? "hidden" : "";
+        },
+    },
+    mounted() {
+        const initUserTheme = this.getTheme() || this.getMediaPreference();
+        this.themeMode = initUserTheme;
+        this.setTheme(initUserTheme);
     },
     methods: {
         select(event) {
@@ -70,6 +83,36 @@ export default {
                     filter.active = true;
                 }
             });
+        },
+        setTheme(theme) {
+            localStorage.setItem("theme-mode", theme);
+            this.themeMode = theme;
+            if (theme === "dark") {
+                document.body.classList.add("dark");
+            } else {
+                document.body.classList.remove("dark");
+            }
+        },
+        changeTheme() {
+            const themeMode = this.themeMode;
+            if (themeMode === "dark") {
+                this.setTheme("light");
+            } else {
+                this.setTheme("dark");
+            }
+        },
+        getMediaPreference() {
+            const hasDarkPreference = window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches;
+            if (hasDarkPreference) {
+                return "darm";
+            } else {
+                return "light";
+            }
+        },
+        getTheme() {
+            return localStorage.getItem("theme-mode");
         },
     },
 };

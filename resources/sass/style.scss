@@ -11,6 +11,18 @@
     --text-color-light: #e2eded;
     --body-color: #f7f7f7;
 }
+:root .dark {
+    /*========== Colors ==========*/
+    --first-color: #ff3c009e;
+    --first-color-alt: #ff3c00;
+    --second-color: #27292d;
+    --button-color: #ff3c009e;
+    --button-color-alt: #ff3c00;
+    --title-color: #fff;
+    --text-color: #d1dede;
+    --text-color-light: #e2eded;
+    --body-color: #1f2023;
+}
 * {
     font-family: "Roboto", sans-serif;
     box-sizing: border-box;
@@ -40,6 +52,8 @@ h6 {
     width: 100%;
     background-color: var(--second-color);
     transition: 0.4s;
+    z-index: 500;
+    border-bottom: 1px solid var(--text-color-light);
 }
 .main {
     min-height: 100vh;
