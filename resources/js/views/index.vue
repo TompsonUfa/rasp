@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import AppNav from "@/components/AppNav.vue";
 import AppContent from "@/components/AppContent.vue";
 export default {
@@ -70,6 +71,7 @@ export default {
         },
     },
     mounted() {
+        this.LoadData();
         const initUserTheme = this.getTheme() || this.getMediaPreference();
         this.themeMode = initUserTheme;
         this.setTheme(initUserTheme);
@@ -113,6 +115,11 @@ export default {
         },
         getTheme() {
             return localStorage.getItem("theme-mode");
+        },
+        LoadData() {
+            axios.get("/").then((res) => {
+                console.log(res);
+            });
         },
     },
 };
