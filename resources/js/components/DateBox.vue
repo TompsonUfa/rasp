@@ -1,6 +1,10 @@
 <template>
     <div class="date">
-        <date-radio :date="date"></date-radio>
+        <date-radio
+            v-for="item in date"
+            :key="item.id"
+            :date="item"
+        ></date-radio>
     </div>
 </template>
 

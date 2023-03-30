@@ -4,13 +4,10 @@
             <div class="container">
                 <div class="schedule__content">
                     <h1 class="schedule__title">Расписание занятий</h1>
-                    <app-filters
-                        v-bind="$attrs"
-                        :filters="filters"
-                    ></app-filters>
-                    <post-form :date="date" :filters="filters"></post-form>
+                    <app-filters></app-filters>
+                    <post-form :date="this.date"></post-form>
                 </div>
-                <app-result class="schedule__result"></app-result>
+                <!-- <app-result class="schedule__result"></app-result> -->
             </div>
         </section>
     </main>
@@ -27,15 +24,12 @@ export default {
         AppResult,
     },
     props: {
-        filters: {
-            type: Array,
-            required: true,
-        },
         date: {
             type: Array,
             required: true,
         },
     },
+    inheritAttrs: false,
 };
 </script>
 <style lang="scss" scoped>

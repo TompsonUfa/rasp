@@ -1,12 +1,12 @@
 <template>
-    <label class="radio" v-for="(el, index) in date" :key="el.key">
+    <label class="radio">
         <input
+            :checked="date.active"
             type="radio"
             name="date"
-            :value="el.value"
-            :checked="index == 0"
+            :value="date.id"
         />
-        <span>{{ el.name }}</span>
+        <span>{{ date.name }}</span>
     </label>
 </template>
 
@@ -14,7 +14,7 @@
 export default {
     props: {
         date: {
-            type: Array,
+            type: Object,
             required: true,
         },
     },

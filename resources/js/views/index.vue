@@ -1,64 +1,48 @@
 <template>
     <app-nav :themeMode="themeMode" @change-theme="changeTheme"></app-nav>
-    <app-content :date="date" :filters="filters" @select="select"></app-content>
-    <my-loader v-if="this.loading"></my-loader>
+    <app-content :date="date"></app-content>
+    <my-loader v-show="this.loading"></my-loader>
 </template>
 
 <script>
-import axios from "axios";
 import AppNav from "@/components/AppNav.vue";
 import AppContent from "@/components/AppContent.vue";
+import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
 export default {
     components: {
         AppNav,
         AppContent,
     },
+    computed: {
+        ...mapGetters(["filters", "activeOption"]),
+    },
     data() {
         return {
-            filters: [
-                {
-                    id: 1,
-                    name: "Учебные группы",
-                    active: true,
-                    options: [
-                        { id: 1, name: "Первая группа" },
-                        { id: 2, name: "Вторая группа" },
-                        { id: 3, name: "Третья группа" },
-                        { id: 4, name: "Четвертая группа" },
-                    ],
-                },
-                {
-                    id: 2,
-                    name: "Преподаватели",
-                    active: false,
-                    options: [
-                        { id: 1, name: "Первый преподаватель" },
-                        { id: 2, name: "Второй преподаватель" },
-                        { id: 3, name: "Третий преподаватель" },
-                        { id: 4, name: "Четвертый преподаватель" },
-                    ],
-                },
-            ],
             date: [
                 {
                     id: 1,
                     name: "На сегодня",
                     value: "today",
+                    active: true,
                 },
                 {
                     id: 2,
                     name: "На завтра",
                     value: "tomorrow",
+                    active: false,
                 },
                 {
                     id: 3,
                     name: "На неделю",
                     value: "week",
+                    active: false,
                 },
                 {
                     id: 4,
                     name: "На следующую неделю",
                     value: "nextWeek",
+                    active: false,
                 },
             ],
             loading: false,
@@ -71,21 +55,23 @@ export default {
         },
     },
     mounted() {
-        this.LoadData();
+        this.fetchGroups();
+        this.fetchTeachers();
         const initUserTheme = this.getTheme() || this.getMediaPreference();
         this.themeMode = initUserTheme;
         this.setTheme(initUserTheme);
     },
     methods: {
-        select(event) {
-            this.filters.forEach((filter, index) => {
-                if (event != filter) {
-                    filter.active = false;
-                } else {
-                    filter.active = true;
-                }
-            });
-        },
+        ...mapActions(["fetchTeachers", "fetchGroups", "setActive"]),
+        // selectDate(event) {
+        //     this.date.forEach((item, index) => {
+        //         if (event != item) {
+        //             item.active = false;
+        //         } else {
+        //             item.active = true;
+        //         }
+        //     });
+        // },
         setTheme(theme) {
             localStorage.setItem("theme-mode", theme);
             this.themeMode = theme;
@@ -116,11 +102,39 @@ export default {
         getTheme() {
             return localStorage.getItem("theme-mode");
         },
-        LoadData() {
-            axios.get("/").then((res) => {
-                console.log(res);
-            });
-        },
+        // submitForm() {
+        //     this.loading = true;
+
+        //     let activeFilter = "",
+        //         activeDate = "";
+
+        //     this.filters.forEach((filter, index) => {
+        //         if (filter.active) {
+        //             activeFilter = filter.id;
+        //         }
+        //     });
+
+        //     this.date.forEach((item, index) => {
+        //         if (item.active) {
+        //             activeDate = item.id;
+        //         }
+        //     });
+
+        //     axios
+        //         .post("/", {
+        //             filter: activeFilter,
+        //             activeDate: activeDate,
+        //             activeItem: this.activeItem,
+        //         })
+        //         .then((res) => {
+        //             this.loading = false;
+        //             console.log("Ответ: " + res);
+        //         })
+        //         .catch((error) => {
+        //             this.loading = false;
+        //             console.log("Ошибки: " + error);
+        //         });
+        // },
     },
 };
 </script>

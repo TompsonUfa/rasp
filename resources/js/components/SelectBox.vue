@@ -2,55 +2,23 @@
     <div class="select-box">
         <input type="checkbox" class="select-box__view" v-model="checked" />
         <div class="select-box__title">
-            <span>{{ toggleOption }}</span>
+            <span></span>
             <i class="bx bx-chevron-down"></i>
         </div>
-        <select-options
-            @option="option"
-            v-for="filter in findActiveFilter"
-            :key="filter.id"
-            :options="filter.options"
-            class="select-box__options"
-        ></select-options>
+        <select-options class="select-box__options"></select-options>
     </div>
 </template>
 
 <script>
 import SelectOptions from "@/components/SelectOptions.vue";
+
 export default {
     components: { SelectOptions },
-    props: {
-        filters: {
-            type: Array,
-            required: true,
-        },
-    },
+
     data() {
         return {
             checked: false,
-            activeOption: null,
         };
-    },
-    computed: {
-        findActiveFilter() {
-            return this.filters.filter((element) => {
-                this.activeOption = null;
-                return element.active;
-            });
-        },
-        toggleOption() {
-            if (this.activeOption) {
-                return this.activeOption;
-            } else {
-                return "Выбрать из списка";
-            }
-        },
-    },
-    methods: {
-        option(event) {
-            this.checked = false;
-            this.activeOption = event.name;
-        },
     },
 };
 </script>

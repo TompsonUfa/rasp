@@ -1,15 +1,33 @@
 <template>
     <div class="option">
-        <input class="option__input" type="radio" name="option" />
+        <input
+            class="option__input"
+            type="radio"
+            name="option"
+            :value="option.id"
+            :checked="option.id == 1"
+        />
         <div class="option__text">
-            <i class="bx bx-group"></i> <span><slot></slot></span>
+            <i class="bx bx-group"></i> <span>{{ option.title }}</span>
         </div>
         <div class="option__bg"></div>
     </div>
 </template>
 
 <script>
-export default {};
+export default {
+    data() {
+        return {
+            checked: false,
+        };
+    },
+    props: {
+        option: {
+            type: Object,
+            required: true,
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -79,7 +97,6 @@ export default {};
         z-index: 1;
     }
 }
-
 .dark {
     .option {
         color: var(--text-color);

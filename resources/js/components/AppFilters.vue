@@ -1,10 +1,10 @@
 <template>
     <div class="schedule__filters">
         <my-button
-            v-bind:class="filter.active ? 'button_active' : null"
             v-for="filter in filters"
+            v-bind:class="filter.active ? 'button_active' : null"
             :key="filter.id"
-            @click="selectFilter(filter)"
+            @click="this.toggleActiveFilter(filter)"
         >
             {{ filter.name }}
         </my-button>
@@ -12,18 +12,14 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { mapActions } from "vuex";
 export default {
-    props: {
-        filters: {
-            type: Array,
-            required: true,
-        },
-    },
+    computed: mapGetters(["filters"]),
     methods: {
-        selectFilter(filter) {
-            this.$emit("select", filter);
-        },
+        ...mapActions(["toggleActiveFilter"]),
     },
+    inheritAttrs: false,
 };
 </script>
 

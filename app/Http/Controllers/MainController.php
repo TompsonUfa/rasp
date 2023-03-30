@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Models\Schedule;
 use Illuminate\Http\Request;
-use PhpParser\Node\Expr\FuncCall;
+use App\Services\ScheduleServices;
 
 class MainController extends Controller
 {
     public function index()
     {
-        $groups = Group::all();
-        return view('index', ['groups' => $groups]);
+        return view('index');
+    }
+
+    public function show(Request $request, ScheduleServices $service)
+    {
+        $schedule = $service->show($request);
     }
 }

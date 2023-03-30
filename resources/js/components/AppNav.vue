@@ -2,7 +2,7 @@
     <header class="header" id="header">
         <nav class="nav container">
             <a href="https://www.bifk.ru/" class="nav__logo"> BIFK </a>
-            <div @click="$emit('changeTheme')" class="change-theme">
+            <div @click="$emit('change-theme')" class="change-theme">
                 <i v-if="themeMode === 'dark'" class="bx bx-sun"></i>
                 <i v-else class="bx bx-moon"></i>
             </div>
@@ -18,7 +18,7 @@ export default {
             required: true,
         },
     },
-    emits: ["changeTheme"],
+    emits: ["change-theme"],
 };
 </script>
 
