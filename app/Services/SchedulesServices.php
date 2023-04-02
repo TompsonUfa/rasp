@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Models\schedule;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\SchedulesImport;
+
 
 class SchedulesServices
 {
@@ -48,5 +51,10 @@ class SchedulesServices
 
 
         return $schedules;
+    }
+    public function create($request)
+    {
+        $file = $request->file('file');
+        $excel = Excel::import(new SchedulesImport, $file);
     }
 }

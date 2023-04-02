@@ -9,7 +9,7 @@
         <input
             @change="this.handleFileUpload"
             type="file"
-            name="filefield"
+            name="file"
             multiple="multiple"
         />
         <button type="submit">Загрузить</button>
@@ -87,7 +87,7 @@ export default {
         },
         submitFile() {
             let formData = new FormData();
-            formData.append("file", this.file);
+            formData.append("file", this.files);
             axios
                 .post("create", formData, {
                     headers: {
