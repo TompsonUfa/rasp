@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TeachersController;
 use App\Http\Controllers\Api\GroupsController;
+use App\Http\Controllers\Api\SchedulesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,3 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('groups', GroupsController::class);
 Route::apiResource('teachers', TeachersController::class);
+Route::apiResource('schedules', SchedulesController::class);

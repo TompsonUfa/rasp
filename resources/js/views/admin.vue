@@ -1,23 +1,27 @@
 <template>
     <app-nav :themeMode="themeMode" @change-theme="changeTheme"></app-nav>
-    <app-content @submitForm="submitForm"></app-content>
-    <my-loader v-show="this.loading"></my-loader>
-    <button-up @click="scrollToTop" v-if="this.showBtnUp"></button-up>
+    <form
+        @submit.prevent="submitFile"
+        style="margin-top: 200px"
+        method="post"
+        enctype="multipart/form-data"
+    >
+        <input
+            @change="this.handleFileUpload"
+            type="file"
+            name="filefield"
+            multiple="multiple"
+        />
+        <button type="submit">Загрузить</button>
+    </form>
 </template>
 
 <script>
 import AppNav from "@/components/AppNav.vue";
-import AppContent from "@/components/AppContent.vue";
-import { mapGetters } from "vuex";
-import { mapActions } from "vuex";
-
+import axios from "axios";
 export default {
     components: {
         AppNav,
-        AppContent,
-    },
-    computed: {
-        ...mapGetters(["filters", "activeOption", "activeDate", "schedules"]),
     },
     destroyed() {
         window.removeEventListener("scroll", this.handleScroll);
@@ -27,31 +31,17 @@ export default {
     },
     data() {
         return {
-            loading: false,
             showBtnUp: false,
             themeMode: "",
+            files: [],
         };
     },
-    watch: {
-        loading: function () {
-            document.body.style.overflow = this.loading ? "hidden" : "";
-        },
-    },
     mounted() {
-        this.fetchGroups();
-        this.fetchTeachers();
         const initUserTheme = this.getTheme() || this.getMediaPreference();
         this.themeMode = initUserTheme;
         this.setTheme(initUserTheme);
     },
     methods: {
-        ...mapActions([
-            "fetchTeachers",
-            "fetchGroups",
-            "setActive",
-            "fetchSchedules",
-            "schedulesShow",
-        ]),
         setTheme(theme) {
             localStorage.setItem("theme-mode", theme);
             this.themeMode = theme;
@@ -82,25 +72,6 @@ export default {
         getTheme() {
             return localStorage.getItem("theme-mode");
         },
-        submitForm() {
-            this.loading = true;
-
-            const activeFilter = this.filters.filter(
-                (filter) => filter.active
-            )[0].id;
-            const activeOption = this.activeOption.id;
-            const date = this.activeDate.id;
-
-            this.fetchSchedules([activeFilter, date, activeOption])
-                .then((response) => {
-                    this.loading = false;
-                    this.schedulesShow();
-                })
-                .catch((error) => {
-                    this.loading = false;
-                    console.log("Что-то, произошло не так. Попробуйте снова.");
-                });
-        },
         handleScroll() {
             if (window.scrollY > 200) {
                 this.showBtnUp = true;
@@ -110,6 +81,25 @@ export default {
         },
         scrollToTop() {
             window.scrollTo({ top: 0, behavior: "smooth" });
+        },
+        handleFileUpload(event) {
+            this.files = event.target.files[0];
+        },
+        submitFile() {
+            let formData = new FormData();
+            formData.append("file", this.file);
+            axios
+                .post("create", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         },
     },
 };

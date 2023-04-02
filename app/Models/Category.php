@@ -13,6 +13,6 @@ class Category extends Model
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class, 'schedule_id', 'id');
+        return $this->hasMany(Schedule::class, 'category_id', 'id');
     }
 }

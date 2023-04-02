@@ -2,23 +2,39 @@
     <div class="select-box">
         <input type="checkbox" class="select-box__view" v-model="checked" />
         <div class="select-box__title">
-            <span></span>
+            <span>{{
+                this.activeOption ? this.activeOption.title : null
+            }}</span>
             <i class="bx bx-chevron-down"></i>
         </div>
-        <select-options class="select-box__options"></select-options>
+        <select-options
+            @toggle="toggle"
+            class="select-box__options"
+        ></select-options>
     </div>
 </template>
 
 <script>
 import SelectOptions from "@/components/SelectOptions.vue";
-
+import { mapGetters } from "vuex";
 export default {
     components: { SelectOptions },
-
+    computed: {
+        ...mapGetters(["activeOption"]),
+    },
     data() {
         return {
             checked: false,
         };
+    },
+    methods: {
+        toggle() {
+            if (this.checked) {
+                this.checked = false;
+            } else {
+                this.checked = true;
+            }
+        },
     },
 };
 </script>

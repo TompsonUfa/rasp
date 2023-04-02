@@ -1,22 +1,27 @@
 <template>
     <label class="radio">
         <input
-            :checked="date.active"
+            :checked="date.id == 1"
             type="radio"
             name="date"
             :value="date.id"
+            @change="this.setActiveDate(date)"
         />
         <span>{{ date.name }}</span>
     </label>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
     props: {
         date: {
             type: Object,
             required: true,
         },
+    },
+    methods: {
+        ...mapActions(["setActiveDate"]),
     },
 };
 </script>

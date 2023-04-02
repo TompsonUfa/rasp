@@ -1,7 +1,7 @@
 <template>
-    <form @submit="submitForm" method="post" class="form">
+    <form @submit.prevent="$emit('submitForm')" method="post" class="form">
         <select-box class="form__select"></select-box>
-        <date-box :date="date" class="form__date"></date-box>
+        <date-box class="form__date"></date-box>
         <div class="form__controls">
             <my-button class="form__sumbit">Показать</my-button>
         </div>
@@ -13,12 +13,6 @@ import SelectBox from "@/components/SelectBox.vue";
 import DateBox from "@/components/DateBox.vue";
 export default {
     components: { SelectBox, DateBox },
-    props: {
-        date: {
-            type: Array,
-            required: true,
-        },
-    },
 };
 </script>
 

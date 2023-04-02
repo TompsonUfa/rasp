@@ -13,6 +13,6 @@ class Teacher extends Model
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class, 'schedule_id', 'id');
+        return $this->hasMany(Schedule::class, 'teacher_id', 'id');
     }
 }

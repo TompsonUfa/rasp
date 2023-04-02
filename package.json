@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "boxicons": "^2.1.4",
+        "moment": "^2.29.4",
         "vue-axios": "^3.5.2",
         "vuex": "^4.1.0"
     }

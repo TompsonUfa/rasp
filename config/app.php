@@ -69,8 +69,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
-
+    'timezone' => env('APP_TIMEZONE', 'Asia/Yekaterinburg'),
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -82,7 +81,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ru',
 
     /*
     |--------------------------------------------------------------------------

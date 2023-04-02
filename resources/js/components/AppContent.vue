@@ -5,9 +5,12 @@
                 <div class="schedule__content">
                     <h1 class="schedule__title">Расписание занятий</h1>
                     <app-filters></app-filters>
-                    <post-form :date="this.date"></post-form>
+                    <post-form @submitForm="$emit('submitForm')"></post-form>
                 </div>
-                <!-- <app-result class="schedule__result"></app-result> -->
+                <app-result
+                    v-if="this.schedulesShow"
+                    class="schedule__result"
+                ></app-result>
             </div>
         </section>
     </main>
@@ -17,17 +20,15 @@
 import AppFilters from "@/components/AppFilters.vue";
 import PostForm from "@/components/PostForm.vue";
 import AppResult from "@/components/AppResult.vue";
+import { mapGetters } from "vuex";
 export default {
     components: {
         AppFilters,
         PostForm,
         AppResult,
     },
-    props: {
-        date: {
-            type: Array,
-            required: true,
-        },
+    computed: {
+        ...mapGetters(["schedulesShow"]),
     },
     inheritAttrs: false,
 };

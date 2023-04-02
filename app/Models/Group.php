@@ -13,6 +13,6 @@ class Group extends Model
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class, 'schedule_id', 'id');
+        return $this->hasMany(Schedule::class, 'group_id', 'id');
     }
 }

@@ -5,7 +5,9 @@
             type="radio"
             name="option"
             :value="option.id"
-            :checked="option.id == 1"
+            :checked="option.id == 1 && option == activeOption"
+            @change="this.setActive(option)"
+            @click="$emit('toggle')"
         />
         <div class="option__text">
             <i class="bx bx-group"></i> <span>{{ option.title }}</span>
@@ -15,18 +17,22 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 export default {
-    data() {
-        return {
-            checked: false,
-        };
-    },
     props: {
         option: {
             type: Object,
             required: true,
         },
     },
+    computed: {
+        ...mapGetters(["activeOption"]),
+    },
+    methods: {
+        ...mapActions(["setActive"]),
+    },
+    emits: ["toggle"],
 };
 </script>
 
@@ -72,11 +78,11 @@ export default {
         opacity: 0;
         z-index: 3;
         &:checked {
-            color: var(--text-color);
+            color: var(--text-white);
         }
         &:checked ~ .option__bg,
         &:checked ~ .option__text {
-            color: var(--text-color);
+            color: var(--text-white);
             background-color: var(--button-color-alt);
         }
     }
@@ -99,7 +105,7 @@ export default {
 }
 .dark {
     .option {
-        color: var(--text-color);
+        color: var(--text-white);
     }
 }
 </style>
