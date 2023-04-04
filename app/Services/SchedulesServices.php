@@ -55,6 +55,6 @@ class SchedulesServices
     public function create($request)
     {
         $file = $request->file('file');
-        $excel = Excel::import(new SchedulesImport, $file);
+        Excel::import(new SchedulesImport, $file);
     }
 }
