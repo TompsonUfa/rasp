@@ -36,8 +36,19 @@ class SchedulesImport implements ToCollection, WithStartRow
         function checkForDelete()
         {
         };
-        function edit()
+        function edit($id, $groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
         {
+            Schedule::where('id', $id)
+                ->update([
+                    'group_id' => $groupId,
+                    'teacher_id' => $teacherId,
+                    'time' => $time,
+                    'date' => $date,
+                    'lesson' => $lesson,
+                    'room' => $room,
+                    'category_id' => $categoryId,
+                    'position' => $position
+                ]);
         };
         function add($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)  //Запись расписания в базу
         {
@@ -58,10 +69,13 @@ class SchedulesImport implements ToCollection, WithStartRow
                 ->where('date', $date)
                 ->where('position', $position)
                 ->first();
+
             if (empty($schedule)) {
                 add($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position); // если записи в базе нет, то добавляем
             } else {
-                $schedule = Schedule::where('group_id', $groupId)
+                $scheduleId = $schedule->id;
+
+                $schedule = Schedule::where('id', $scheduleId)
                     ->where('teacher_id', $teacherId)
                     ->where('time', $time)
                     ->where('date', $date)
@@ -70,13 +84,15 @@ class SchedulesImport implements ToCollection, WithStartRow
                     ->where('category_id', $categoryId)
                     ->where('position', $position)
                     ->first();
+
                 if (empty($schedule)) {
-                    edit($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position); // если запись есть, но данные различаются, то изменяем.
+                    edit($scheduleId, $groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position); // если запись есть, но данные различаются, то изменяем.
                 }
             }
         };
-        
+
         $position = 0;
+        $schedules = [];
         foreach ($rows as $row_index => $row) {
             if ($row_index == 0) {
                 $nameGroup = trim($row[2]);
@@ -123,6 +139,17 @@ class SchedulesImport implements ToCollection, WithStartRow
                 $this->categoryId = $category->id;
 
                 check($this->groupId, $this->teacherId, $time, $this->date, $lesson, $room, $this->categoryId, $position); // проверка записи в базе
+
+                $collection = collect([
+                    'groupId' => $this->groupId,
+                    'teacherId' => $this->teacherId,
+                    'time' => $time,
+                    'date' => $this->date,
+                    'lesson' => $lesson,
+                    'room' => $room,
+                    'categoryId' => $this->categoryId,
+                    'position' => $position,
+                ]);
             }
             $position++;
         }
