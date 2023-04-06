@@ -10,15 +10,25 @@ use App\Models\Schedule;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 
-class SchedulesImport implements ToCollection, WithStartRow
+
+class SchedulesImport implements WithEvents, WithMultipleSheets
 {
-    /**
-     * @param array $row
-     *
-     * @return User|null
-     */
+    use Importable, RegistersEventListeners;
 
+    public function sheets(): array
+    {
+        return [
+            "Активный" => new ActiveSheetImport(),
+        ];
+    }
+}
+class ActiveSheetImport implements ToCollection, WithStartRow
+{
     protected $groupId;
     protected $date;
     protected $teacherId;
@@ -28,31 +38,14 @@ class SchedulesImport implements ToCollection, WithStartRow
     {
         return 5;
     }
-    public function collection(Collection $rows)
+    public function delete($id)
     {
-        function delete()
-        {
-        };
-        function checkForDelete()
-        {
-        };
-        function edit($id, $groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
-        {
-            Schedule::where('id', $id)
-                ->update([
-                    'group_id' => $groupId,
-                    'teacher_id' => $teacherId,
-                    'time' => $time,
-                    'date' => $date,
-                    'lesson' => $lesson,
-                    'room' => $room,
-                    'category_id' => $categoryId,
-                    'position' => $position
-                ]);
-        };
-        function add($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)  //Запись расписания в базу
-        {
-            Schedule::create([
+        Schedule::find($id)->delete();
+    }
+    public function edit($id, $groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
+    {
+        Schedule::where('id', $id)
+            ->update([
                 'group_id' => $groupId,
                 'teacher_id' => $teacherId,
                 'time' => $time,
@@ -60,39 +53,53 @@ class SchedulesImport implements ToCollection, WithStartRow
                 'lesson' => $lesson,
                 'room' => $room,
                 'category_id' => $categoryId,
-                'position' => $position,
+                'position' => $position
             ]);
-        };
-        function check($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
-        {
-            $schedule = Schedule::where('group_id', $groupId)
+    }
+    public function add($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
+    {
+        Schedule::create([
+            'group_id' => $groupId,
+            'teacher_id' => $teacherId,
+            'time' => $time,
+            'date' => $date,
+            'lesson' => $lesson,
+            'room' => $room,
+            'category_id' => $categoryId,
+            'position' => $position,
+        ]);
+    }
+    public function check($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
+    {
+        $schedule = Schedule::where('group_id', $groupId)
+            ->where('date', $date)
+            ->where('position', $position)
+            ->first();
+
+        if (empty($schedule)) {
+            $this->add($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position); // если записи в базе нет, то добавляем
+        } else {
+            $scheduleId = $schedule->id;
+
+            $schedule = Schedule::where('id', $scheduleId)
+                ->where('teacher_id', $teacherId)
+                ->where('time', $time)
                 ->where('date', $date)
+                ->where('lesson', $lesson)
+                ->where('room', $room)
+                ->where('category_id', $categoryId)
                 ->where('position', $position)
                 ->first();
 
             if (empty($schedule)) {
-                add($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position); // если записи в базе нет, то добавляем
-            } else {
-                $scheduleId = $schedule->id;
-
-                $schedule = Schedule::where('id', $scheduleId)
-                    ->where('teacher_id', $teacherId)
-                    ->where('time', $time)
-                    ->where('date', $date)
-                    ->where('lesson', $lesson)
-                    ->where('room', $room)
-                    ->where('category_id', $categoryId)
-                    ->where('position', $position)
-                    ->first();
-
-                if (empty($schedule)) {
-                    edit($scheduleId, $groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position); // если запись есть, но данные различаются, то изменяем.
-                }
+                $this->edit($scheduleId, $groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position); // если запись есть, но данные различаются, то изменяем.
             }
-        };
-
+        }
+    }
+    public function collection(Collection $rows)
+    {
         $position = 0;
-        $schedules = [];
+
         foreach ($rows as $row_index => $row) {
             if ($row_index == 0) {
                 $nameGroup = trim($row[2]);
@@ -138,18 +145,15 @@ class SchedulesImport implements ToCollection, WithStartRow
                 }
                 $this->categoryId = $category->id;
 
-                check($this->groupId, $this->teacherId, $time, $this->date, $lesson, $room, $this->categoryId, $position); // проверка записи в базе
-
-                $collection = collect([
-                    'groupId' => $this->groupId,
-                    'teacherId' => $this->teacherId,
-                    'time' => $time,
-                    'date' => $this->date,
-                    'lesson' => $lesson,
-                    'room' => $room,
-                    'categoryId' => $this->categoryId,
-                    'position' => $position,
-                ]);
+                $this->check($this->groupId, $this->teacherId, $time, $this->date, $lesson, $room, $this->categoryId, $position); // проверка записи в базе
+            } else {
+                $schedule = Schedule::where('group_id', $this->groupId)
+                    ->where('date', $this->date)
+                    ->where('position', $position)
+                    ->first();
+                if (isset($schedule)) {
+                    $this->delete($schedule->id);
+                }
             }
             $position++;
         }

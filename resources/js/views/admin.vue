@@ -9,7 +9,7 @@
         <input
             @change="this.handleFileUpload"
             type="file"
-            name="file"
+            name="files"
             multiple="multiple"
         />
         <button type="submit">Загрузить</button>
@@ -83,11 +83,16 @@ export default {
             window.scrollTo({ top: 0, behavior: "smooth" });
         },
         handleFileUpload(event) {
-            this.files = event.target.files[0];
+            this.files = event.target.files;
         },
         submitFile() {
+            let files = this.files;
             let formData = new FormData();
-            formData.append("file", this.files);
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append("files[" + i + "]", files[i]);
+            }
+
             axios
                 .post("create", formData, {
                     headers: {

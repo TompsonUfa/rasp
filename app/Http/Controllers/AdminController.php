@@ -13,6 +13,6 @@ class AdminController extends Controller
     }
     public function create(Request $request, SchedulesServices $service)
     {
-        $excel = $service->create($request);
+        $service->create($request);
     }
 }
