@@ -19,4 +19,5 @@ components.forEach(component => {
 
 
 app.use(store);
+
 app.mount('#app');

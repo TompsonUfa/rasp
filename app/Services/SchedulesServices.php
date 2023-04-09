@@ -55,9 +55,11 @@ class SchedulesServices
     public function create($request)
     {
         $files = $request->allFiles();
-
         foreach ($files['files'] as $key => $file) {
-            Excel::import(new SchedulesImport, $file);
+            $id = now()->unix();
+            session(['import' => $id]);
+
+            Excel::import(new SchedulesImport($id), $file);
         }
     }
 }

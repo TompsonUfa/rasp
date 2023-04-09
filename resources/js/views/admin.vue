@@ -14,6 +14,7 @@
         />
         <button type="submit">Загрузить</button>
     </form>
+    <progress id="progressBar" :value="progress" max="100"></progress>
 </template>
 
 <script>
@@ -34,6 +35,9 @@ export default {
             showBtnUp: false,
             themeMode: "",
             files: [],
+            current_row: 0,
+            total_rows: 0,
+            progress: 0,
         };
     },
     mounted() {
@@ -85,7 +89,7 @@ export default {
         handleFileUpload(event) {
             this.files = event.target.files;
         },
-        submitFile() {
+        async submitFile() {
             let files = this.files;
             let formData = new FormData();
 
@@ -93,18 +97,38 @@ export default {
                 formData.append("files[" + i + "]", files[i]);
             }
 
-            axios
-                .post("create", formData, {
+            let self = this;
+            await axios
+                .post("/admin/create", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
+                    onUploadProgress: async () => {
+                        await self.getData();
+                    },
                 })
                 .then((res) => {
-                    console.log(res);
+                    console.log(res.data);
                 })
                 .catch((err) => {
                     console.log(err);
                 });
+        },
+        async getData() {
+            while (true) {
+                const data = await axios.get("/import-status");
+                if (data.finished) {
+                    this.current_row = this.total_rows;
+                    this.progress = 100;
+                    break;
+                }
+                this.total_rows = data.total_rows;
+                this.current_row = data.current_row;
+                this.progress = Math.ceil(
+                    (data.current_row / data.total_rows) * 100
+                );
+                await new Promise((resolve) => setTimeout(resolve, 1000)); // добавляем задержку, чтобы не перегружать сервер
+            }
         },
     },
 };

@@ -9,39 +9,110 @@ use App\Models\Schedule;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Events\BeforeImport;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
-use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Concerns\SkipsUnknownSheets;
 
 
-class SchedulesImport implements WithEvents, WithMultipleSheets
+class SchedulesImport implements WithMultipleSheets, WithEvents
 {
-    use Importable, RegistersEventListeners;
+    public $id;
+
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            BeforeImport::class => function (BeforeImport $event) {
+                $totalRows = $event->getReader()->getTotalRows();
+                if (filled($totalRows)) {
+                    cache()->forever("total_rows_{$this->id}", array_values($totalRows)[0]);
+                    cache()->forever("start_date_{$this->id}", now()->unix());
+                }
+            },
+            AfterImport::class => function (AfterImport $event) {
+                cache(["end_date_{$this->id}" => now()], now()->addMinute());
+                cache()->forget("total_rows_{$this->id}");
+                cache()->forget("start_date_{$this->id}");
+                cache()->forget("current_row_{$this->id}");
+            },
+        ];
+    }
 
     public function sheets(): array
     {
+        // текущая неделя
+        $today = today();
+        $weekStartDate = $today->startOfWeek()->format('d.m');
+        $weekEndDate = $today->endOfWeek()->format('d.m.Y');
+
+        $firstOptionWeek = $weekStartDate . "-" . $weekEndDate;
+        $secondOptionWeek = $weekStartDate . " -" . $weekEndDate;
+        $thirdOptionWeek = $weekStartDate . "- " . $weekEndDate;
+        $fourthOptionWeek = $weekStartDate . " - " . $weekEndDate;
+
+        // след. неделя
+        $today = today();
+        $today->addDays(7);
+        $weekStartDate = $today->startOfWeek()->format('d.m');
+        $weekEndDate = $today->endOfWeek()->format('d.m.Y');
+
+        $firstOptionNextWeek = $weekStartDate . "-" . $weekEndDate;
+        $secondOptionNextWeek = $weekStartDate . " -" . $weekEndDate;
+        $thirdOptionNextWeek = $weekStartDate . "- " . $weekEndDate;
+        $fourthOptionNextWeek = $weekStartDate . " - " . $weekEndDate;
+
         return [
-            "Активный" => new ActiveSheetImport(),
+
+            $firstOptionWeek => new ActiveSheetImport($this->id),
+            $secondOptionWeek => new ActiveSheetImport($this->id),
+            $thirdOptionWeek => new ActiveSheetImport($this->id),
+            $fourthOptionWeek => new ActiveSheetImport($this->id),
+
+            $firstOptionNextWeek => new ActiveSheetImport($this->id),
+            $secondOptionNextWeek => new ActiveSheetImport($this->id),
+            $thirdOptionNextWeek => new ActiveSheetImport($this->id),
+            $fourthOptionNextWeek => new ActiveSheetImport($this->id),
+
+            "Активный" => new ActiveSheetImport($this->id),
         ];
     }
 }
-class ActiveSheetImport implements ToCollection, WithStartRow
+
+class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheets
 {
-    protected $groupId;
-    protected $date;
-    protected $teacherId;
-    protected $categoryId;
+    public $id;
+    public $groupId;
+    public $date;
+    public $teacherId;
+    public $categoryId;
+
+    public function __construct(int $id)
+    {
+        $this->id = $id;
+    }
+
+    public function onUnknownSheet($sheetName)
+    {
+        info("Sheet {$sheetName} was skipped");
+    }
 
     public function startRow(): int
     {
         return 5;
     }
+
     public function delete($id)
     {
         Schedule::find($id)->delete();
     }
+
     public function edit($id, $groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
     {
         Schedule::where('id', $id)
@@ -56,6 +127,7 @@ class ActiveSheetImport implements ToCollection, WithStartRow
                 'position' => $position
             ]);
     }
+
     public function add($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
     {
         Schedule::create([
@@ -69,6 +141,7 @@ class ActiveSheetImport implements ToCollection, WithStartRow
             'position' => $position,
         ]);
     }
+
     public function check($groupId, $teacherId, $time, $date, $lesson, $room, $categoryId, $position)
     {
         $schedule = Schedule::where('group_id', $groupId)
@@ -96,9 +169,11 @@ class ActiveSheetImport implements ToCollection, WithStartRow
             }
         }
     }
-    public function collection(Collection $rows)
+
+    public function collection(Collection $rows,)
     {
         $position = 0;
+        $i = 0;
 
         foreach ($rows as $row_index => $row) {
             if ($row_index == 0) {
@@ -110,19 +185,28 @@ class ActiveSheetImport implements ToCollection, WithStartRow
                     ]);
                 }
                 $this->groupId = $group->id;
+                $i = $row_index + 5;
+                cache()->forever("current_row_{$this->id}", $i);
                 continue;
+            } else {
+                $i++;
+                cache()->forever("current_row_{$this->id}", $i);
             }
+
             if (trim($row[0]) == "дни") {
                 $position = 0;
                 $this->date = null;
                 continue;
             }
+
             if (isset($row[1]) && empty($this->date)) {
                 $this->date = trim($row[1]);
             }
+
             if (isset($row[2])) {
                 $time = trim($row[2]);
             }
+
             if (isset($row[3]) && isset($row[4]) && isset($row[5]) && isset($row[6])) {
                 $lesson = trim($row[3]);
                 $teacherName = trim($row[4]);
@@ -155,7 +239,10 @@ class ActiveSheetImport implements ToCollection, WithStartRow
                     $this->delete($schedule->id);
                 }
             }
+
             $position++;
+
+            sleep(1);
         }
     }
 }
