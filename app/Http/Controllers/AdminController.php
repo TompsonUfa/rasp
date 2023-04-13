@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\SchedulesServices;
+use Mockery\Undefined;
 
 class AdminController extends Controller
 {
@@ -20,7 +21,6 @@ class AdminController extends Controller
     public function status()
     {
         $id = session('import');
-
         return response([
             'started' => filled(cache("start_date_$id")),
             'finished' => filled(cache("end_date_$id")),

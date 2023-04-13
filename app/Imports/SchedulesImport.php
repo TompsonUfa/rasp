@@ -15,7 +15,8 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\SkipsUnknownSheets;
-
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Support\Facades\Cache;
 
 class SchedulesImport implements WithMultipleSheets, WithEvents
 {
@@ -85,7 +86,7 @@ class SchedulesImport implements WithMultipleSheets, WithEvents
     }
 }
 
-class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheets
+class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheets, WithChunkReading
 {
     public $id;
     public $groupId;
@@ -101,6 +102,11 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
     public function onUnknownSheet($sheetName)
     {
         info("Sheet {$sheetName} was skipped");
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
     public function startRow(): int
@@ -186,11 +192,11 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
                 }
                 $this->groupId = $group->id;
                 $i = $row_index + 5;
-                cache()->forever("current_row_{$this->id}", $i);
+                cache()->forever("current_row_$this->id", $i);
                 continue;
             } else {
                 $i++;
-                cache()->forever("current_row_{$this->id}", $i);
+                cache()->forever("current_row_$this->id", $i);
             }
 
             if (trim($row[0]) == "дни") {

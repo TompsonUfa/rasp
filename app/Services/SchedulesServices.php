@@ -4,9 +4,10 @@ namespace App\Services;
 
 use App\Models\schedule;
 use Carbon\Carbon;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\SchedulesImport;
 
+
+use Illuminate\Support\Facades\Bus;
+use App\Jobs\ImportExcel;
 
 class SchedulesServices
 {
@@ -57,9 +58,9 @@ class SchedulesServices
         $files = $request->allFiles();
         foreach ($files['files'] as $key => $file) {
             $id = now()->unix();
+            $filePath = $file->store('temp');
             session(['import' => $id]);
-
-            Excel::import(new SchedulesImport($id), $file);
+            Bus::dispatch(new ImportExcel($filePath, $id));
         }
     }
 }

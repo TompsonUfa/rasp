@@ -108,7 +108,7 @@ export default {
                     },
                 })
                 .then((res) => {
-                    console.log(res.data);
+                    console.log(res);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -116,7 +116,7 @@ export default {
         },
         async getData() {
             while (true) {
-                const data = await axios.get("/import-status");
+                const { data } = await axios.get("/import-status");
                 if (data.finished) {
                     this.current_row = this.total_rows;
                     this.progress = 100;
@@ -124,10 +124,11 @@ export default {
                 }
                 this.total_rows = data.total_rows;
                 this.current_row = data.current_row;
+
                 this.progress = Math.ceil(
                     (data.current_row / data.total_rows) * 100
                 );
-                await new Promise((resolve) => setTimeout(resolve, 1000)); // добавляем задержку, чтобы не перегружать сервер
+                await new Promise((resolve) => setTimeout(resolve, 2000)); // добавляем задержку, чтобы не перегружать сервер
             }
         },
     },
