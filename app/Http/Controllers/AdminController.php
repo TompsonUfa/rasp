@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\SchedulesServices;
-use Mockery\Undefined;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -18,14 +18,14 @@ class AdminController extends Controller
         $service->create($request);
     }
 
-    public function status()
+    public function status($filename)
     {
-        $id = session('import');
+        $filename = session('import' . $filename);
         return response([
-            'started' => filled(cache("start_date_$id")),
-            'finished' => filled(cache("end_date_$id")),
-            'current_row' => (int) cache("current_row_$id"),
-            'total_rows' => (int) cache("total_rows_$id"),
+            'started' => filled(cache("start_date_$filename")),
+            'finished' => filled(cache("end_date_$filename")),
+            'current_row' => (int) cache("current_row_$filename"),
+            'total_rows' => (int) cache("total_rows_$filename"),
         ]);
     }
 }

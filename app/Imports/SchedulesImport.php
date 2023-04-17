@@ -16,38 +16,16 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\SkipsUnknownSheets;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Illuminate\Support\Facades\Cache;
 
 class SchedulesImport implements WithMultipleSheets, WithEvents
 {
-    public $id;
-
-    public function __construct(int $id)
+    protected $filename;
+    protected $sheets = [];
+    protected $totalRows;
+    public function __construct($filename)
     {
-        $this->id = $id;
-    }
+        $this->filename = $filename;
 
-    public function registerEvents(): array
-    {
-        return [
-            BeforeImport::class => function (BeforeImport $event) {
-                $totalRows = $event->getReader()->getTotalRows();
-                if (filled($totalRows)) {
-                    cache()->forever("total_rows_{$this->id}", array_values($totalRows)[0]);
-                    cache()->forever("start_date_{$this->id}", now()->unix());
-                }
-            },
-            AfterImport::class => function (AfterImport $event) {
-                cache(["end_date_{$this->id}" => now()], now()->addMinute());
-                cache()->forget("total_rows_{$this->id}");
-                cache()->forget("start_date_{$this->id}");
-                cache()->forget("current_row_{$this->id}");
-            },
-        ];
-    }
-
-    public function sheets(): array
-    {
         // текущая неделя
         $today = today();
         $weekStartDate = $today->startOfWeek()->format('d.m');
@@ -69,34 +47,66 @@ class SchedulesImport implements WithMultipleSheets, WithEvents
         $thirdOptionNextWeek = $weekStartDate . "- " . $weekEndDate;
         $fourthOptionNextWeek = $weekStartDate . " - " . $weekEndDate;
 
+        array_push(
+            $this->sheets,
+            $firstOptionWeek,
+            $secondOptionWeek,
+            $thirdOptionWeek,
+            $fourthOptionWeek,
+            $firstOptionNextWeek,
+            $secondOptionNextWeek,
+            $thirdOptionNextWeek,
+            $fourthOptionNextWeek,
+            "Активный",
+        );
+    }
+
+    public function registerEvents(): array
+    {
         return [
-
-            $firstOptionWeek => new ActiveSheetImport($this->id),
-            $secondOptionWeek => new ActiveSheetImport($this->id),
-            $thirdOptionWeek => new ActiveSheetImport($this->id),
-            $fourthOptionWeek => new ActiveSheetImport($this->id),
-
-            $firstOptionNextWeek => new ActiveSheetImport($this->id),
-            $secondOptionNextWeek => new ActiveSheetImport($this->id),
-            $thirdOptionNextWeek => new ActiveSheetImport($this->id),
-            $fourthOptionNextWeek => new ActiveSheetImport($this->id),
-
-            "Активный" => new ActiveSheetImport($this->id),
+            BeforeImport::class => function (BeforeImport $event) {
+                $reader = $event->reader;
+                foreach ($this->sheets as $sheet) {
+                    if ($reader->sheetNameExists($sheet)) {
+                        $this->totalRows += $reader->getSheetByName($sheet)->getHighestRow();
+                    }
+                }
+                cache()->forever("total_rows_" . $this->filename, $this->totalRows);
+                cache()->forever("start_date_" . $this->filename, now()->unix());
+            },
+            AfterImport::class => function (AfterImport $event) {
+                cache(["end_date_" . $this->filename => now()], now()->addMinute());
+                cache()->forget("total_rows_" . $this->filename);
+                cache()->forget("start_date_" . $this->filename);
+                cache()->forget("current_row_" . $this->filename);
+            },
         ];
+    }
+
+    public function sheets(): array
+    {
+        $sheetImports = [];
+
+        foreach ($this->sheets as $sheet) {
+            $sheetImports[$sheet] = new ActiveSheetImport('');
+        }
+
+        return $sheetImports;
     }
 }
 
 class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheets, WithChunkReading
 {
-    public $id;
+
     public $groupId;
     public $date;
     public $teacherId;
     public $categoryId;
+    public $filename;
 
-    public function __construct(int $id)
+    public function __construct($filename)
     {
-        $this->id = $id;
+        $this->filename = $filename;
     }
 
     public function onUnknownSheet($sheetName)
@@ -178,6 +188,7 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
 
     public function collection(Collection $rows,)
     {
+
         $position = 0;
         $i = 0;
 
@@ -192,11 +203,11 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
                 }
                 $this->groupId = $group->id;
                 $i = $row_index + 5;
-                cache()->forever("current_row_$this->id", $i);
+                cache()->forever("current_row_" . $this->filename, $i);
                 continue;
             } else {
                 $i++;
-                cache()->forever("current_row_$this->id", $i);
+                cache()->forever("current_row_" . $this->filename, $i);
             }
 
             if (trim($row[0]) == "дни") {

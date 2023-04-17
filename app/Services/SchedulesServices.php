@@ -57,10 +57,10 @@ class SchedulesServices
     {
         $files = $request->allFiles();
         foreach ($files['files'] as $key => $file) {
-            $id = now()->unix();
             $filePath = $file->store('temp');
-            session(['import' => $id]);
-            Bus::dispatch(new ImportExcel($filePath, $id));
+            $filename = $file->getClientOriginalName();
+            session(['import' . $filename => $filename]);
+            Bus::dispatch(new ImportExcel($filePath, $filename));
         }
     }
 }
