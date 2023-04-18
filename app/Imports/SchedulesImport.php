@@ -19,12 +19,12 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class SchedulesImport implements WithMultipleSheets, WithEvents
 {
-    protected $filename;
+    protected $id;
     protected $sheets = [];
     protected $totalRows;
-    public function __construct($filename)
+    public function __construct($id)
     {
-        $this->filename = $filename;
+        $this->id = $id;
 
         // текущая неделя
         $today = today();
@@ -71,14 +71,14 @@ class SchedulesImport implements WithMultipleSheets, WithEvents
                         $this->totalRows += $reader->getSheetByName($sheet)->getHighestRow();
                     }
                 }
-                cache()->forever("total_rows_" . $this->filename, $this->totalRows);
-                cache()->forever("start_date_" . $this->filename, now()->unix());
+                cache()->forever("total_rows_{$this->id}", $this->totalRows);
+                cache()->forever("start_date_{$this->id}", now()->unix());
             },
             AfterImport::class => function (AfterImport $event) {
-                cache(["end_date_" . $this->filename => now()], now()->addMinute());
-                cache()->forget("total_rows_" . $this->filename);
-                cache()->forget("start_date_" . $this->filename);
-                cache()->forget("current_row_" . $this->filename);
+                cache(["end_date_{$this->id}" => now()], now()->addMinute());
+                cache()->forget("total_rows_{$this->id}");
+                cache()->forget("start_date_{$this->id}");
+                cache()->forget("current_row_{$this->id}");
             },
         ];
     }
@@ -86,9 +86,8 @@ class SchedulesImport implements WithMultipleSheets, WithEvents
     public function sheets(): array
     {
         $sheetImports = [];
-
         foreach ($this->sheets as $sheet) {
-            $sheetImports[$sheet] = new ActiveSheetImport('');
+            $sheetImports[$sheet] = new ActiveSheetImport($this->id);
         }
 
         return $sheetImports;
@@ -102,11 +101,11 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
     public $date;
     public $teacherId;
     public $categoryId;
-    public $filename;
+    public $id;
 
-    public function __construct($filename)
+    public function __construct($id)
     {
-        $this->filename = $filename;
+        $this->id = $id;
     }
 
     public function onUnknownSheet($sheetName)
@@ -203,11 +202,11 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
                 }
                 $this->groupId = $group->id;
                 $i = $row_index + 5;
-                cache()->forever("current_row_" . $this->filename, $i);
+                cache()->forever("current_row_{$this->id}", $i);
                 continue;
             } else {
                 $i++;
-                cache()->forever("current_row_" . $this->filename, $i);
+                cache()->forever("current_row_{$this->id}", $i);
             }
 
             if (trim($row[0]) == "дни") {

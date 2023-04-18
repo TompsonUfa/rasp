@@ -55,12 +55,21 @@ class SchedulesServices
     }
     public function create($request)
     {
-        $files = $request->allFiles();
-        foreach ($files['files'] as $key => $file) {
-            $filePath = $file->store('temp');
-            $filename = $file->getClientOriginalName();
-            session(['import' . $filename => $filename]);
-            Bus::dispatch(new ImportExcel($filePath, $filename));
+        $id = now()->unix();
+        $file = $request->file('file');
+        $filePath = $file->store('temp');
+        $filename = $file->getClientOriginalName();
+
+        $object = (object)["id" => $id, 'name' => $filename];
+
+        $data = $request->session()->get('import');
+        if (isset($data)) {
+            $request->session()->push('import', $object);
+        } else {
+            $request->session()->put('import', $object);
         }
+        $request->session()->save();
+
+        Bus::dispatch(new ImportExcel($filePath, $id));
     }
 }

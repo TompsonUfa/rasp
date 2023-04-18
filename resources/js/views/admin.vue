@@ -14,7 +14,13 @@
         />
         <button type="submit">Загрузить</button>
     </form>
-    <progress id="progressBar" :value="progress" max="100"></progress>
+    <progress
+        v-for="file in files"
+        :key="file.id"
+        id="progressBar"
+        :value="progress"
+        max="100"
+    ></progress>
 </template>
 
 <script>
@@ -92,31 +98,29 @@ export default {
         async submitFile() {
             let files = this.files;
             let formData = new FormData();
-
-            for (let i = 0; i < files.length; i++) {
-                formData.append("files[" + i + "]", files[i]);
-            }
-
             let self = this;
-            await axios
-                .post("/admin/create", formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    onUploadProgress: async () => {
-                        await self.getData();
-                    },
-                })
-                .then((res) => {
-                    console.log(res);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            for (let i = 0; i < files.length; i++) {
+                formData.append("file", files[i]);
+                await axios
+                    .post("/admin/create", formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        onUploadProgress: async () => {
+                            await self.getData(files[i].name);
+                        },
+                    })
+                    .then((res) => {
+                        console.log(res);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
         },
-        async getData() {
+        async getData(filename) {
             while (true) {
-                const { data } = await axios.get("/import-status");
+                const { data } = await axios.get("/import-status/" + filename);
                 if (data.finished) {
                     this.current_row = this.total_rows;
                     this.progress = 100;

@@ -19,5 +19,5 @@ Route::get('/', [MainController::class, 'index'])->name('home');
 Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 
 Route::post('/admin/create', [AdminController::class, 'create']);
-Route::get('/import-status', [AdminController::class, 'status']);
+Route::get('/import-status/{filename}', [AdminController::class, 'status']);
 // Auth::routes();

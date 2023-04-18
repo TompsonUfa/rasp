@@ -18,14 +18,30 @@ class AdminController extends Controller
         $service->create($request);
     }
 
-    public function status($filename)
+    public function status(Request $request, $filename)
     {
-        $filename = session('import' . $filename);
-        return response([
-            'started' => filled(cache("start_date_$filename")),
-            'finished' => filled(cache("end_date_$filename")),
-            'current_row' => (int) cache("current_row_$filename"),
-            'total_rows' => (int) cache("total_rows_$filename"),
-        ]);
+        //получаем  имя файла, и вытаскиваем запись его айдишник;
+        $data = $request->session()->get('import');
+
+        if (isset($data)) {
+            foreach ($data as $id => $session) {
+                dd($id);
+                if ($session->name == $filename) { //если есть совп, записываем результат, удаляем значение сессии и кэш
+                    $response = response([
+                        'started' => filled(cache("start_date_$session->id")),
+                        'finished' => filled(cache("end_date_$session->id")),
+                        'current_row' => (int) cache("current_row_$session->id"),
+                        'total_rows' => (int) cache("total_rows_$session->id"),
+                    ]);
+                    if (filled(cache("end_date_$session->id"))) {
+                        cache()->forget("start_date_{$this->$session->id}");
+                        cache()->forget("end_date_{$this->$session->id}");
+                        cache()->forget("current_row_{$this->$session->id}");
+                        cache()->forget("total_row_{$this->$session->id}");
+                    }
+                    return $response;
+                }
+            }
+        }
     }
 }
