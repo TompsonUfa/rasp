@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Models\schedule;
-use Carbon\Carbon;
-
-
-use Illuminate\Support\Facades\Bus;
 use App\Jobs\ImportExcel;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Bus;
+
 
 class SchedulesServices
 {
@@ -55,19 +55,19 @@ class SchedulesServices
     }
     public function create($request)
     {
-        $id = now()->unix();
+        $id = $request->get('uuid');
         $file = $request->file('file');
         $filePath = $file->store('temp');
-        $filename = $file->getClientOriginalName();
 
-        $object = (object)["id" => $id, 'name' => $filename];
+        $object = (object)["id" => $id];
 
         $data = $request->session()->get('import');
         if (isset($data)) {
             $request->session()->push('import', $object);
         } else {
-            $request->session()->put('import', $object);
+            $request->session()->put('import', [$object]);
         }
+
         $request->session()->save();
 
         Bus::dispatch(new ImportExcel($filePath, $id));

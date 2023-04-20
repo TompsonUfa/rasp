@@ -71,14 +71,11 @@ class SchedulesImport implements WithMultipleSheets, WithEvents
                         $this->totalRows += $reader->getSheetByName($sheet)->getHighestRow();
                     }
                 }
-                cache()->forever("total_rows_{$this->id}", $this->totalRows);
-                cache()->forever("start_date_{$this->id}", now()->unix());
+                cache()->put("total_rows_{$this->id}", $this->totalRows,  60 * 60 * 24);
+                cache()->put("start_date_{$this->id}", now()->unix(),  60 * 60 * 24);
             },
             AfterImport::class => function (AfterImport $event) {
-                cache(["end_date_{$this->id}" => now()], now()->addMinute());
-                cache()->forget("total_rows_{$this->id}");
-                cache()->forget("start_date_{$this->id}");
-                cache()->forget("current_row_{$this->id}");
+                cache()->put("end_date_{$this->id}", now()->unix(),  60 * 60 * 24);
             },
         ];
     }
@@ -201,12 +198,17 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
                     ]);
                 }
                 $this->groupId = $group->id;
-                $i = $row_index + 5;
-                cache()->forever("current_row_{$this->id}", $i);
+                if (((int) cache("current_row_{$this->id}")) == 0) {
+                    $i = $row_index + 5;
+                } else {
+                    $i = (int) cache("current_row_{$this->id}");
+                    $i++;
+                };
+                cache()->put("current_row_{$this->id}", $i, 60 * 60 * 24);
                 continue;
             } else {
                 $i++;
-                cache()->forever("current_row_{$this->id}", $i);
+                cache()->put("current_row_{$this->id}", $i, 60 * 60 * 24);
             }
 
             if (trim($row[0]) == "дни") {
@@ -258,7 +260,7 @@ class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheet
 
             $position++;
 
-            sleep(1);
+            // sleep(1);
         }
     }
 }

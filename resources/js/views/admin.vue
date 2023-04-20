@@ -17,14 +17,14 @@
     <progress
         v-for="file in files"
         :key="file.id"
-        id="progressBar"
-        :value="progress"
+        :value="file.progress"
         max="100"
     ></progress>
 </template>
 
 <script>
 import AppNav from "@/components/AppNav.vue";
+import { uuid } from "vue3-uuid";
 import axios from "axios";
 export default {
     components: {
@@ -41,8 +41,6 @@ export default {
             showBtnUp: false,
             themeMode: "",
             files: [],
-            current_row: 0,
-            total_rows: 0,
             progress: 0,
         };
     },
@@ -93,21 +91,30 @@ export default {
             window.scrollTo({ top: 0, behavior: "smooth" });
         },
         handleFileUpload(event) {
-            this.files = event.target.files;
+            let files = event.target.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const fileObject = {
+                    uuid: uuid.v4(),
+                    file: files[i],
+                    progress: 0,
+                };
+                this.files.push(fileObject);
+            }
         },
         async submitFile() {
-            let files = this.files;
-            let formData = new FormData();
             let self = this;
-            for (let i = 0; i < files.length; i++) {
-                formData.append("file", files[i]);
+            for (let i = 0; i < this.files.length; i++) {
+                let formData = new FormData();
+                formData.append("file", this.files[i].file);
+                formData.append("uuid", this.files[i].uuid);
                 await axios
                     .post("/admin/create", formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
                         onUploadProgress: async () => {
-                            await self.getData(files[i].name);
+                            await self.getData(this.files[i]);
                         },
                     })
                     .then((res) => {
@@ -118,18 +125,14 @@ export default {
                     });
             }
         },
-        async getData(filename) {
+        async getData(file) {
             while (true) {
-                const { data } = await axios.get("/import-status/" + filename);
+                const { data } = await axios.get("/import-status/" + file.uuid);
                 if (data.finished) {
-                    this.current_row = this.total_rows;
-                    this.progress = 100;
+                    file.progress = 100;
                     break;
                 }
-                this.total_rows = data.total_rows;
-                this.current_row = data.current_row;
-
-                this.progress = Math.ceil(
+                file.progress = Math.ceil(
                     (data.current_row / data.total_rows) * 100
                 );
                 await new Promise((resolve) => setTimeout(resolve, 2000)); // добавляем задержку, чтобы не перегружать сервер

@@ -1,7 +1,7 @@
-import { createApp } from 'vue';
-import store from "@/store"
-
-import '../sass/app.scss';
+import { createApp } from "vue";
+import store from "@/store";
+import UUID from "vue3-uuid";
+import "../sass/app.scss";
 
 const app = createApp({});
 
@@ -10,14 +10,13 @@ import Admin from "@/views/admin.vue";
 
 import components from "@/components/UI";
 
-app.component('index-vue', Index);
-app.component('admin-vue', Admin);
+app.component("index-vue", Index);
+app.component("admin-vue", Admin);
 
-components.forEach(component => {
-    app.component(component.name, component)
+components.forEach((component) => {
+    app.component(component.name, component);
 });
 
+app.use(store, UUID);
 
-app.use(store);
-
-app.mount('#app');
+app.mount("#app");
