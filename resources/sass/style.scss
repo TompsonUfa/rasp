@@ -4,9 +4,9 @@
     --first-color: #ff3c009e;
     --first-color-alt: #ff3c00;
     --second-color: #fff;
-    --button-color: #ff3c009e;
+    --button-color: #f04511;
     --button-color-alt: #ff3c00;
-    --title-color: #ff3c00;
+    --title-color: #f04511;
     --text-color: #000;
     --border-color: #d1d7e3;
     --body-color: #f7f7f7;
@@ -61,6 +61,7 @@ h6 {
     border-bottom: 1px solid var(--body-color);
 }
 .main {
+    width: 100%;
     min-height: 100vh;
     background: var(--body-color);
     transition: 0.4s;
