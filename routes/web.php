@@ -16,7 +16,7 @@ use App\Http\Controllers\AdminController;
 
 Route::get('/', [MainController::class, 'index'])->name('home');
 
-Route::get('/admin', [AdminController::class, 'index'])->name('admin');
+Route::get('/admin/{name?}', [AdminController::class, 'index'])->where('name', '[A-Za-z]+')->name('admin');
 
 Route::post('/admin/create', [AdminController::class, 'create']);
 Route::get('/import-status/{filename}', [AdminController::class, 'status']);

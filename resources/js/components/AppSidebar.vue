@@ -4,26 +4,18 @@
             <div class="sidebar__logo">
                 <a href="https://bifk.ru/">BIFK</a>
             </div>
-            <ul class="sidebar__list">
-                <li class="sidebar__item">
-                    <a class="sidebar__link" href="/admin">Импорт расписания</a>
-                </li>
-                <li class="sidebar__item">
-                    <a class="sidebar__link" href="/admin/groups"
-                        >Учебные группы</a
-                    >
-                </li>
-                <li class="sidebar__item">
-                    <a class="sidebar__link" href="/admin/teachers"
-                        >Преподаватели</a
-                    >
-                </li>
-                <li class="sidebar__item">
-                    <a class="sidebar__link" href="/admin/categories"
-                        >Категории предметов</a
-                    >
-                </li>
-            </ul>
+            <router-link class="sidebar__link" :to="{ name: 'Import' }">
+                Импорт расписания
+            </router-link>
+            <router-link class="sidebar__link" :to="{ name: 'Groups' }">
+                Учебные группы
+            </router-link>
+            <router-link class="sidebar__link" :to="{ name: 'Teachers' }">
+                Преподаватели
+            </router-link>
+            <router-link class="sidebar__link" :to="{ name: 'Categories' }">
+                Категории предметов
+            </router-link>
         </div>
     </nav>
 </template>
@@ -54,27 +46,24 @@ export default {};
         display: flex;
         justify-content: center;
         align-items: center;
-        border-bottom: 1px solid #fff;
         a {
             color: #fff;
         }
     }
-    &__list {
-        padding: 35px;
-        list-style: none;
-    }
-    &__item {
-        font-size: 18px;
-        &_active {
-            background-color: var(--button-color-alt);
-        }
-    }
     &__link {
-        display: block;
-        padding: 15px 10px;
         font-size: 18px;
+        display: block;
+        padding: 15px 10px 15px 25px;
+        font-size: 15px;
         letter-spacing: 0.5px;
         color: #fff;
+        transition: all 0.2s ease-in;
+        &:hover {
+            background: var(--first-color-alt);
+        }
+    }
+    .router-link-active {
+        background: var(--first-color-alt);
     }
 }
 </style>

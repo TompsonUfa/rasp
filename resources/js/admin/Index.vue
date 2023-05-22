@@ -3,7 +3,7 @@
         <app-sidebar></app-sidebar>
         <div class="main">
             <div class="content">
-                <drop-file></drop-file>
+                <router-view />
             </div>
         </div>
     </div>
@@ -12,12 +12,10 @@
 <script>
 import AppNav from "@/components/AppNav.vue";
 import AppSidebar from "@/components/AppSidebar.vue";
-import DropFile from "@/components/DropFile.vue";
 export default {
     components: {
         AppNav,
         AppSidebar,
-        DropFile,
     },
     destroyed() {
         window.removeEventListener("scroll", this.handleScroll);
