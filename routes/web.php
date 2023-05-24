@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
-use App\Http\Controllers\AdminController;
+// use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,8 +16,3 @@ use App\Http\Controllers\AdminController;
 
 Route::get('/', [MainController::class, 'index'])->name('home');
 
-Route::get('/admin/{name?}', [AdminController::class, 'index'])->where('name', '[A-Za-z]+')->name('admin');
-
-Route::post('/admin/create', [AdminController::class, 'create']);
-Route::get('/import-status/{filename}', [AdminController::class, 'status']);
-// Auth::routes();

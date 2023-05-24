@@ -3,7 +3,11 @@
         <app-sidebar></app-sidebar>
         <div class="main">
             <div class="content">
-                <router-view />
+                <div class="container">
+                    <router-view />
+                    <modal-edit v-if="this.modalEditStatus"></modal-edit>
+                    <modal-remove v-if="this.modalRemoveStatus"></modal-remove>
+                </div>
             </div>
         </div>
     </div>
@@ -12,10 +16,20 @@
 <script>
 import AppNav from "@/components/AppNav.vue";
 import AppSidebar from "@/components/AppSidebar.vue";
+import ModalRemove from "@/components/ModalRemove.vue";
+import ModalEdit from "@/components/ModalEdit.vue";
+import { mapGetters } from "vuex";
+
 export default {
     components: {
         AppNav,
         AppSidebar,
+        ModalRemove,
+        ModalEdit
+    },
+    computed: {
+        ...mapGetters(["modalRemoveStatus"]),
+        ...mapGetters(["modalEditStatus"]),
     },
     destroyed() {
         window.removeEventListener("scroll", this.handleScroll);
@@ -83,9 +97,17 @@ export default {
 .wrapper {
     display: flex;
 }
+
 .content {
     width: 100%;
     height: 100%;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    padding: 0px 25px;
     display: flex;
     justify-content: center;
     align-items: center;

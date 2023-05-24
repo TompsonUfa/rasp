@@ -23,7 +23,7 @@ class GroupsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       
     }
 
     /**
@@ -31,7 +31,7 @@ class GroupsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
