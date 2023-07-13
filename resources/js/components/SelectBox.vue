@@ -5,8 +5,8 @@
             <span>{{
                 this.activeOption ? this.activeOption.title : null
             }}</span>
-            <i class="bx bx-chevron-down"></i>
         </div>
+        <i class="bx bx-chevron-down"></i>
         <select-options
             @toggle="toggle"
             class="select-box__options"
@@ -39,11 +39,23 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .select-box {
     position: relative;
     width: 100%;
-
+    .bx-chevron-down {
+        position: absolute;
+        width: 40px;
+        height: 28px;
+        top: 50%;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: translateY(-50%);
+        font-size: 1.5rem;
+        color: var(--icon-color);
+    }
     &__view {
         position: absolute;
         top: 0;
@@ -54,9 +66,8 @@ export default {
         cursor: pointer;
     }
 
-    &__view:checked + &__title i {
-        color: var(--button-color-alt);
-        rotate: 180deg;
+    &__view:hover ~ &__title {
+        border-color: #aaaeb7;
     }
 
     &__title {
@@ -64,16 +75,12 @@ export default {
         height: 56px;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 14px;
-        border: 1px solid var(--border-color);
+        padding: var(--dp-input-padding);
+        padding-left: var(--dp-input-icon-padding);
+        border: 1px solid var(--dp-border-color);
         color: var(--text-color);
         border-radius: 10px;
-        i {
-            pointer-events: none;
-            font-size: 30px;
-            color: var(--border-color);
-            transition: 0.3s;
-        }
+        transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
     }
 
     &__options {

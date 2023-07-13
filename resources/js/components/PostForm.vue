@@ -19,16 +19,7 @@ export default {
 <style lang="scss" scoped>
 .form {
     &__select {
-        margin-top: 30px;
-    }
-    &__date {
-        padding: 20px 14px;
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        margin-top: 30px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+        margin: 30px 0;
     }
     &__controls {
         text-align: center;

@@ -3,7 +3,7 @@
         <nav class="nav container">
             <a href="https://www.bifk.ru/" class="nav__logo"> BIFK </a>
             <div @click="$emit('change-theme')" class="change-theme">
-                <i v-if="themeMode === 'dark'" class="bx bx-sun"></i>
+                <i v-if="dark === true" class="bx bx-sun"></i>
                 <i v-else class="bx bx-moon"></i>
             </div>
         </nav>
@@ -13,8 +13,8 @@
 <script>
 export default {
     props: {
-        themeMode: {
-            type: String,
+        dark: {
+            type: Boolean,
             required: true,
         },
     },

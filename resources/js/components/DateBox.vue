@@ -1,46 +1,18 @@
 <template>
-    <div class="date">
-        <date-radio
-            v-for="item in date"
-            :key="item.id"
-            :date="item"
-        ></date-radio>
-    </div>
+    <VueDatePicker :dark="this.dark" v-model="date"></VueDatePicker>
 </template>
 
 <script>
-import DateRadio from "@/components/DateRadio.vue";
 import { mapActions } from "vuex";
 export default {
-    components: { DateRadio },
     data() {
         return {
-            date: [
-                {
-                    id: 1,
-                    name: "На сегодня",
-                    value: "today",
-                },
-                {
-                    id: 2,
-                    name: "На завтра",
-                    value: "tomorrow",
-                },
-                {
-                    id: 3,
-                    name: "На неделю",
-                    value: "week",
-                },
-                {
-                    id: 4,
-                    name: "На следующую неделю",
-                    value: "nextWeek",
-                },
-            ],
+            date: null,
+            dark: false,
         };
     },
     mounted() {
-        this.setActiveDate(this.date[0]);
+        // this.setActiveDate(this.date[0]);
     },
     methods: {
         ...mapActions(["setActiveDate"]),
@@ -48,11 +20,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.dark {
-    .date {
-        background: var(--body-color);
-        color: #fff;
-    }
+<style lang="scss">
+.dp__input {
+    height: 56px;
 }
 </style>

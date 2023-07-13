@@ -2,6 +2,10 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from 'vue-router'
 import store from "@/store";
 import UUID from "vue3-uuid";
+
+
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 import "../sass/app.scss";
 
 const app = createApp({});
@@ -26,6 +30,7 @@ const router = createRouter({
     routes,
 })
 
+app.component('VueDatePicker', VueDatePicker);
 app.component("index-vue", Index);
 app.component("admin-vue", Admin);
 

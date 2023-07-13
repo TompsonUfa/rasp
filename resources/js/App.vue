@@ -74,7 +74,7 @@ export default {
                 "(prefers-color-scheme: dark)"
             ).matches;
             if (hasDarkPreference) {
-                return "darm";
+                return "dark";
             } else {
                 return "light";
             }

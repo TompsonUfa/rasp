@@ -11,6 +11,11 @@
     --border-color: #d1d7e3;
     --body-color: #f7f7f7;
     --text-white: #fff;
+    --icon-color: #959595;
+    --dp-font-family: "Montserrat", sans-serif !important;
+    --dp-border-color: #d1d7e3;
+
+    --dp-border-radius: 10px;
 }
 :root .dark {
     /*========== Colors ==========*/
@@ -29,7 +34,7 @@ body {
     scroll-behavior: smooth;
 }
 * {
-    font-family: "Roboto", sans-serif;
+    font-family: "Montserrat", sans-serif;
     box-sizing: border-box;
     padding: 0;
     margin: 0;
