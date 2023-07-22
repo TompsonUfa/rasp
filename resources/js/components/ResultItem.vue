@@ -1,28 +1,30 @@
 <template>
     <h2 class="result__title">{{ this.day }}</h2>
-    <table class="result__table">
-        <thead>
-            <tr>
-                <th>Время</th>
-                <th>Предмет / Преподаватель</th>
-                <th>Тип занятия</th>
-                <th>Аудитория</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="day in this.sortSchedule" :key="day.id">
-                <td>{{ day.time }}</td>
-                <td>
-                    {{ day.lesson }}
-                    <span>{{ day.teacher.title }}</span>
-                </td>
-                <td>
-                    {{ day.category.title }}
-                </td>
-                <td>{{ day.room }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="result__wrap">
+        <table class="result__table">
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th>Предмет / Преподаватель</th>
+                    <th>Тип занятия</th>
+                    <th>Аудитория</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="day in this.sortSchedule" :key="day.id">
+                    <td>{{ day.time }}</td>
+                    <td>
+                        {{ day.lesson }}
+                        <span>{{ day.teacher.title }}</span>
+                    </td>
+                    <td>
+                        {{ day.category.title }}
+                    </td>
+                    <td>{{ day.room }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
@@ -53,4 +55,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss"></style>

@@ -1,6 +1,6 @@
 export default {
     actions: {
-        setActiveDate(ctx, date) {
+        setDate(ctx, date) {
             ctx.commit('updateDate', date)
         }
     },
@@ -13,7 +13,7 @@ export default {
         date: {},
     },
     getters: {
-        activeDate(state) {
+        date(state) {
             return state.date;
         },
     },

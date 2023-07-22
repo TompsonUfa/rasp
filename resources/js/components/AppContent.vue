@@ -1,16 +1,24 @@
 <template>
     <main class="main">
-        <section class="section schedule">
+        <section class="section section__filters filters" id="filters">
             <div class="container">
-                <div class="schedule__content">
-                    <h1 class="schedule__title">Расписание занятий</h1>
+                <div class="filters__content">
+                    <h1 class="filters__title">Расписание занятий</h1>
                     <app-filters></app-filters>
-                    <post-form @submitForm="$emit('submitForm')"></post-form>
+                    <post-form
+                        :dark="dark"
+                        @submitForm="$emit('submitForm')"
+                    ></post-form>
                 </div>
-                <app-result
-                    v-if="this.schedulesShow"
-                    class="schedule__result"
-                ></app-result>
+            </div>
+        </section>
+        <section
+            class="section section__schedule schedule"
+            id="schedule"
+            v-if="this.schedulesShow"
+        >
+            <div class="container">
+                <app-result class="schedule__result"></app-result>
             </div>
         </section>
     </main>
@@ -27,6 +35,9 @@ export default {
         PostForm,
         AppResult,
     },
+    props: {
+        dark: Boolean,
+    },
     computed: {
         ...mapGetters(["schedulesShow"]),
     },
@@ -35,6 +46,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .schedule {
+    &__result {
+        background: var(--second-color);
+        border-radius: 15px;
+        padding: 45px;
+    }
+}
+.filters {
     &__title {
         font-size: 35px;
         font-weight: 500;
@@ -48,16 +66,20 @@ export default {
         border-radius: 15px;
         padding: 45px;
     }
-    &__filters {
+    &__btns {
         display: flex;
         justify-content: center;
         gap: 30px;
     }
-    &__result {
-        margin-top: 30px;
-        background: var(--second-color);
-        border-radius: 15px;
-        padding: 45px;
+}
+@media screen and (max-width: 590px) {
+    .filters {
+        &__btns {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 30px;
+        }
     }
 }
 </style>

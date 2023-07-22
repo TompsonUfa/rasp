@@ -36,20 +36,23 @@ export default {
         transition: 0.3s;
         font-size: 20px;
         color: var(--title-color);
+        transition: all 0.3s ease;
         &:hover {
-            color: var(--first-color);
+            color: var(--title-color-alt);
         }
     }
     .change-theme {
         cursor: pointer;
         color: var(--title-color);
-        transition: 0.3s;
-        &:hover {
-            color: var(--first-color);
+        i {
+            transition: all 0.3s ease;
+            font-size: 20px;
         }
-    }
-    i {
-        font-size: 20px;
+        &:hover {
+            i {
+                color: var(--title-color-alt);
+            }
+        }
     }
 }
 </style>

@@ -22,12 +22,10 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        background: var(--button-color);
+        background: var(--first-color-alt);
         border-radius: 50%;
         transition: 0.3s;
-        &:hover {
-            background: var(--button-color-alt);
-        }
+
         i {
             font-size: 30px;
             color: #fff;

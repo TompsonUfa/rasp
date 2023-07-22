@@ -15,7 +15,7 @@ class SchedulesServices
     {
         $filterId = $request->filter;
         $itemId = $request->activeOption;
-        $dateId = $request->activeDate;
+        $date = $request->date;
 
         if ($filterId == 1) {
             $filter = "group_id";
@@ -27,25 +27,8 @@ class SchedulesServices
 
         $query = schedule::where($filter, "=", $itemId)->with(['teacher', 'category']);
 
-        switch ($dateId) {
-            case 1:
-                $query->where("date", "=", $today);
-                break;
-            case 2:
-                $query->where("date", "=", Carbon::tomorrow());
-                break;
-            case 3:
-                $weekStartDate = $today->startOfWeek()->format('Y-m-d');
-                $weekEndDate = $today->endOfWeek()->format('Y-m-d');
-                $query->whereBetween('date', [$weekStartDate, $weekEndDate]);
-                break;
-            case 4:
-                $today->addDays(7);
-                $weekStartDate = $today->startOfWeek()->format('Y-m-d');
-                $weekEndDate = $today->endOfWeek()->format('Y-m-d');
-                $query->whereBetween('date', [$weekStartDate, $weekEndDate]);
-                break;
-        }
+
+        $query->whereBetween("date", [$date[0], $date[1]]);
 
         $schedules = collect($query->orderBy('date')->get())
             ->groupBy('date');

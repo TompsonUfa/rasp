@@ -67,7 +67,7 @@ export default {
     }
 
     &__view:hover ~ &__title {
-        border-color: #aaaeb7;
+        border-color: var(--first-color-alt);
     }
 
     &__title {
@@ -104,7 +104,8 @@ export default {
 .dark {
     .select-box {
         &__title {
-            background: var(--body-color);
+            background-color: #212121;
+            border: 1px solid #2d2d2d;
             color: var(--text-color);
         }
         &__options {

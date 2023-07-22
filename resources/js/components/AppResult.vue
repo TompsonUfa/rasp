@@ -33,13 +33,18 @@ export default {
             margin-top: 0;
         }
     }
+    &__wrap {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+    }
     &__table {
         width: 100%;
         margin: 30px 0px;
-        border-collapse: collapse;
         border-radius: 15px;
-
-        border-radius: 15px;
+        border: 1px solid var(--border-color);
+        border-spacing: 0;
+        table-layout: fixed;
         &:last-child {
             margin-bottom: 0;
         }
@@ -50,6 +55,18 @@ export default {
         th,
         td {
             font-size: 18px;
+            &:nth-child(1) {
+                width: 124px;
+            }
+            &:nth-child(2) {
+                width: 320px;
+            }
+            &:nth-child(3) {
+                width: 200px;
+            }
+            &:nth-child(4) {
+                width: 200px;
+            }
         }
         tbody {
             tr:nth-child(odd) {

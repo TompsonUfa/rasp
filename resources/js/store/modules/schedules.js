@@ -6,7 +6,7 @@ export default {
                 axios
                     .post("api/schedules", {
                         filter: filer,
-                        activeDate: date,
+                        date: date,
                         activeOption: option,
                     })
                     .then((res) => {

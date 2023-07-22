@@ -54,7 +54,7 @@ export default {
     }
     &:hover {
         color: #fff;
-        background-color: var(--button-color-alt);
+        background-color: var(--first-color-alt);
         i {
             animation: moveUp 0.3s ease;
             animation-iteration-count: 1;
@@ -77,13 +77,15 @@ export default {
         height: 100%;
         opacity: 0;
         z-index: 3;
-        &:checked {
-            color: var(--text-white);
+        color: var(--text-color);
+        &:checked ~ .option__bg {
+            background-color: var(--first-color-alt);
         }
-        &:checked ~ .option__bg,
         &:checked ~ .option__text {
-            color: var(--text-white);
-            background-color: var(--button-color-alt);
+            color: #fff;
+        }
+        &:hover ~ .option__text {
+            color: #fff;
         }
     }
     &__text {
@@ -92,6 +94,7 @@ export default {
         gap: 30px;
         align-items: center;
         z-index: 2;
+        color: var(--text-color);
     }
     &__bg {
         pointer-events: none;

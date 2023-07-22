@@ -1,6 +1,6 @@
 <template>
-    <app-nav :themeMode="themeMode" @change-theme="changeTheme"></app-nav>
-    <app-content @submitForm="submitForm"></app-content>
+    <app-nav :dark="dark" @change-theme="changeTheme"></app-nav>
+    <app-content :dark="dark" @submitForm="submitForm"></app-content>
     <my-loader v-show="this.loading"></my-loader>
     <button-up @click="scrollToTop" v-if="this.showBtnUp"></button-up>
 </template>
@@ -17,7 +17,7 @@ export default {
         AppContent,
     },
     computed: {
-        ...mapGetters(["filters", "activeOption", "activeDate", "schedules"]),
+        ...mapGetters(["filters", "activeOption", "date", "schedules"]),
     },
     destroyed() {
         window.removeEventListener("scroll", this.handleScroll);
@@ -29,7 +29,7 @@ export default {
         return {
             loading: false,
             showBtnUp: false,
-            themeMode: "",
+            dark: "",
         };
     },
     watch: {
@@ -41,7 +41,7 @@ export default {
         this.fetchGroups();
         this.fetchTeachers();
         const initUserTheme = this.getTheme() || this.getMediaPreference();
-        this.themeMode = initUserTheme;
+        this.dark = initUserTheme;
         this.setTheme(initUserTheme);
     },
     methods: {
@@ -54,16 +54,16 @@ export default {
         ]),
         setTheme(theme) {
             localStorage.setItem("theme-mode", theme);
-            this.themeMode = theme;
             if (theme === "dark") {
+                this.dark = true;
                 document.body.classList.add("dark");
             } else {
+                this.dark = false;
                 document.body.classList.remove("dark");
             }
         },
         changeTheme() {
-            const themeMode = this.themeMode;
-            if (themeMode === "dark") {
+            if (this.dark === true) {
                 this.setTheme("light");
             } else {
                 this.setTheme("dark");
@@ -89,8 +89,7 @@ export default {
                 (filter) => filter.active
             )[0].id;
             const activeOption = this.activeOption.id;
-            const date = this.activeDate.id;
-
+            const date = this.date;
             this.fetchSchedules([activeFilter, date, activeOption])
                 .then((response) => {
                     this.loading = false;
