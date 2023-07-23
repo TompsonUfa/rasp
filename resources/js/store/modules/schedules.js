@@ -38,7 +38,7 @@ export default {
         schedules(state) {
             return state.schedules;
         },
-        schedulesShow(state) {
+        schedulesVisible(state) {
             return state.schedulesShow;
         },
     },

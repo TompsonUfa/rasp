@@ -5,18 +5,11 @@
                 <div class="filters__content">
                     <h1 class="filters__title">Расписание занятий</h1>
                     <app-filters></app-filters>
-                    <post-form
-                        :dark="dark"
-                        @submitForm="$emit('submitForm')"
-                    ></post-form>
+                    <post-form :dark="dark" @submitForm="$emit('submitForm')"></post-form>
                 </div>
             </div>
         </section>
-        <section
-            class="section section__schedule schedule"
-            id="schedule"
-            v-if="this.schedulesShow"
-        >
+        <section class="section section__schedule schedule" id="schedule" v-if="this.schedulesVisible">
             <div class="container">
                 <app-result class="schedule__result"></app-result>
             </div>
@@ -39,7 +32,7 @@ export default {
         dark: Boolean,
     },
     computed: {
-        ...mapGetters(["schedulesShow"]),
+        ...mapGetters(["schedulesVisible"]),
     },
     inheritAttrs: false,
 };
@@ -52,6 +45,7 @@ export default {
         padding: 45px;
     }
 }
+
 .filters {
     &__title {
         font-size: 35px;
@@ -61,17 +55,20 @@ export default {
         margin-bottom: 30px;
         text-align: center;
     }
+
     &__content {
         background: var(--second-color);
         border-radius: 15px;
         padding: 45px;
     }
+
     &__btns {
         display: flex;
         justify-content: center;
         gap: 30px;
     }
 }
+
 @media screen and (max-width: 590px) {
     .filters {
         &__btns {
