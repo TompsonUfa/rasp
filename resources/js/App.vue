@@ -1,7 +1,11 @@
 <template>
     <app-nav :dark="dark" @change-theme="changeTheme"></app-nav>
     <app-content :dark="dark" @submitForm="submitForm"></app-content>
-    <sections-menu @scrollToSection="scrollToSection" :activeSection="activeSection" :offsets="offsets"></sections-menu>
+    <sections-menu
+        @scrollToSection="scrollToSection"
+        :activeSection="activeSection"
+        :offsets="offsets"
+    ></sections-menu>
     <my-loader v-show="this.loading"></my-loader>
     <button-up @click="scrollToTop" v-if="this.showBtnUp"></button-up>
 </template>
@@ -19,36 +23,43 @@ export default {
         SectionsMenu,
     },
     computed: {
-        ...mapGetters(["filters", "activeOption", "date", "schedules", "schedulesVisible"]),
+        ...mapGetters([
+            "filters",
+            "activeOption",
+            "date",
+            "schedules",
+            "schedulesVisible",
+        ]),
         schedulesCreated() {
             return this.schedulesVisible;
-        }
+        },
     },
     created() {
         window.addEventListener("scroll", this.handleScroll);
-        // window.addEventListener('wheel', this.handleMouseWheelDOM, {
-        //     passive: false
+        // window.addEventListener("wheel", this.handleMouseWheelDOM, {
+        //     passive: false,
         // }); // Mozilla Firefox
-        // window.addEventListener('mousewheel', this.handleMouseWheel, {
-        //     passive: false
-        // }); // Other browsers
-        // window.addEventListener('touchstart', this.touchStart, {
-        //     passive: false
+        window.addEventListener("mousewheel", this.handleMouseWheel, {
+            passive: false,
+        }); // Other browsers
+
+        // window.addEventListener("touchstart", this.touchStart, {
+        //     passive: false,
         // }); // mobile devices
-        // window.addEventListener('touchmove', this.touchMove, {
-        //     passive: false
+        // window.addEventListener("touchmove", this.touchMove, {
+        //     passive: false,
         // }); // mobile devices
     },
     destroyed() {
         window.removeEventListener("scroll", this.handleScroll);
-        window.removeEventListener('mousewheel', this.handleMouseWheel, {
-            passive: false
+        window.removeEventListener("mousewheel", this.handleMouseWheel, {
+            passive: false,
         }); // Other browsers
-        window.removeEventListener('wheel', this.handleMouseWheelDOM, {
-            passive: false
+        window.removeEventListener("wheel", this.handleMouseWheelDOM, {
+            passive: false,
         }); // Mozilla Firefox
-        window.removeEventListener('touchstart', this.touchStart); // mobile devices
-        window.removeEventListener('touchmove', this.touchMove); // mobile devices
+        window.removeEventListener("touchstart", this.touchStart); // mobile devices
+        window.removeEventListener("touchmove", this.touchMove); // mobile devices
     },
     data() {
         return {
@@ -61,14 +72,18 @@ export default {
             touchStartY: 0,
         };
     },
-
     watch: {
+        flush: "post",
         loading: function () {
             document.body.style.overflow = this.loading ? "hidden" : "";
         },
-        schedulesCreated: function () {
-            this.calcSectionOffsets();
-        }
+        schedulesCreated: {
+            handler() {
+                this.offsets = [];
+                this.calcSectionOffsets();
+            },
+            flush: "post",
+        },
     },
     mounted() {
         this.calcSectionOffsets();
@@ -129,7 +144,9 @@ export default {
                 .then((response) => {
                     this.loading = false;
                     if (Object.keys(response.data).length > 0) {
-                        this.schedulesShow()
+                        this.schedulesShow(true);
+                    } else {
+                        this.schedulesShow(false);
                     }
                 })
                 .catch((error) => {
@@ -149,71 +166,75 @@ export default {
         },
         //scrollSection
         calcSectionOffsets() {
-            let sections = document.querySelectorAll('.section');
+            let sections = document.querySelectorAll(".section");
             for (let i = 0; i < sections.length; i++) {
                 let sectionOffset = sections[i].offsetTop;
                 this.offsets.push(sectionOffset);
             }
         },
         scrollToSection(id, force = false) {
-            let element = document.getElementsByTagName('section')[id]
+            let element = document.getElementsByTagName("section")[id];
             if (this.inMove && !force) return false;
             this.activeSection = id;
             this.inMove = true;
             element.scrollIntoView({
                 top: 0,
-                behavior: 'smooth'
+                behavior: "smooth",
             });
             setTimeout(() => {
                 this.inMove = false;
             }, 400);
         },
-        handleMouseWheelDOM: function (e) {
-            if (e.deltaY > 0 && !this.inMove) {
-                this.moveUp();
-            } else if (e.deltaY < 0 && !this.inMove) {
-                this.moveDown();
+        // handleMouseWheelDOM: function (e) {
+        //     if (this.activeSection == 0) {
+        //         if (e.deltaY > 0 && !this.inMove) {
+        //             this.moveUp();
+        //         }
+        //     }
+        //     // if (e.deltaY < 0 && !this.inMove) {
+        //     //     this.moveDown();
+        //     // }
+        //     e.preventDefault();
+        //     return false;
+        // },
+        handleMouseWheel(e) {
+            if (this.activeSection == 0) {
+                e.preventDefault();
+                if (e.wheelDelta < 30 && !this.inMove) {
+                    this.moveUp();
+                }
+                return false;
             }
-            e.preventDefault();
-            return false;
-        },
-        handleMouseWheel: function (e) {
-            if (e.wheelDelta < 30 && !this.inMove) {
-                this.moveUp();
-            } else if (e.wheelDelta > 30 && !this.inMove) {
-                this.moveDown();
-            }
-            e.preventDefault();
-            return false;
         },
         moveDown() {
             this.inMove = true;
             this.activeSection--;
-            if (this.activeSection < 0) this.activeSection = this.offsets.length - 1;
+            if (this.activeSection < 0) this.activeSection = 0;
             this.scrollToSection(this.activeSection, true);
         },
         moveUp() {
             this.inMove = true;
             this.activeSection++;
-            if (this.activeSection > this.offsets.length - 1) this.activeSection = 0;
+            if (this.activeSection > this.offsets.length - 1)
+                this.activeSection = this.offsets.length - 1;
             this.scrollToSection(this.activeSection, true);
         },
-        touchStart(e) {
-            e.preventDefault();
-            this.touchStartY = e.touches[0].clientY;
-        },
-        touchMove(e) {
-            if (this.inMove) return false;
-            e.preventDefault();
-            const currentY = e.touches[0].clientY;
-            if (this.touchStartY < currentY) {
-                this.moveDown();
-            } else {
-                this.moveUp();
-            }
-            this.touchStartY = 0;
-            return false;
-        }
+        // touchStart(e) {
+        //     e.preventDefault();
+        //     this.touchStartY = e.touches[0].clientY;
+        // },
+        // touchMove(e) {
+        //     if (this.inMove) return false;
+        //     e.preventDefault();
+        //     const currentY = e.touches[0].clientY;
+        //     if (this.touchStartY < currentY) {
+        //         this.moveDown();
+        //     } else {
+        //         this.moveUp();
+        //     }
+        //     this.touchStartY = 0;
+        //     return false;
+        // },
         //endScroll
     },
 };

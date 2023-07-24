@@ -18,16 +18,16 @@ export default {
                     });
             });
         },
-        schedulesShow(ctx) {
-            ctx.commit('toggleShow');
+        schedulesShow(ctx, status) {
+            ctx.commit('toggleShow', status);
         }
     },
     mutations: {
         updateSchedules(state, data) {
             state.schedules = data;
         },
-        toggleShow(state) {
-            state.schedulesShow = true;
+        toggleShow(state,status) {
+            state.schedulesShow = status;
         }
     },
     state: {
