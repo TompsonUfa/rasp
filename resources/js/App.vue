@@ -1,16 +1,9 @@
 <template>
     <app-nav :dark="dark" @change-theme="changeTheme"></app-nav>
-    <app-content
-        @moveUp="moveUp"
-        :dark="dark"
-        @submitForm="submitForm"
-    ></app-content>
-    <sections-menu
-        @scrollToSection="scrollToSection"
-        :activeSection="activeSection"
-        :offsets="offsets"
-    ></sections-menu>
+    <app-content @moveUp="moveUp" :dark="dark" @submitForm="submitForm"></app-content>
+    <sections-menu @scrollToSection="scrollToSection" :activeSection="activeSection" :offsets="offsets"></sections-menu>
     <my-loader v-show="this.loading"></my-loader>
+    <modal-error @closeModal="this.closeModal" v-if="showModal"></modal-error>
     <button-up @click="scrollToTop" v-if="this.showBtnUp"></button-up>
 </template>
 
@@ -18,6 +11,7 @@
 import AppNav from "@/components/AppNav.vue";
 import AppContent from "@/components/AppContent.vue";
 import SectionsMenu from "@/components/SectionsMenu.vue";
+import ModalError from "@/components/ModalError.vue";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -25,6 +19,7 @@ export default {
         AppNav,
         AppContent,
         SectionsMenu,
+        ModalError
     },
     computed: {
         ...mapGetters([
@@ -36,9 +31,6 @@ export default {
         ]),
         createdSchedules() {
             return this.schedulesVisible;
-        },
-        renderSchedules() {
-            return this.schedules;
         },
     },
     created() {
@@ -56,6 +48,7 @@ export default {
             activeSection: 0,
             offsets: [],
             touchStartY: 0,
+            showModal: false,
         };
     },
     watch: {
@@ -69,14 +62,7 @@ export default {
             },
             flush: "post",
         },
-
-        // renderSchedules() {
-        //     this.$nextTick(function () {
-        //         this.moveUp();
-        //     });
-        // },
     },
-
     mounted() {
         this.calcSectionOffsets();
         this.fetchGroups();
@@ -138,10 +124,12 @@ export default {
                     if (Object.keys(response.data).length > 0) {
                         this.schedulesShow(true);
                     } else {
+                        this.showModal = true;
                         this.schedulesShow(false);
                     }
                 })
                 .catch((error) => {
+                    this.showModal = true;
                     this.loading = false;
                 });
         },
@@ -200,6 +188,10 @@ export default {
             }
             this.scrollToSection(this.activeSection, true);
         },
+        //modal 
+        closeModal() {
+            this.showModal = false;
+        }
     },
 };
 </script>
