@@ -5,9 +5,6 @@
             :key="schedule.id"
             :schedule="schedule"
         ></result-item>
-        <h2 v-if="this.schedules.length == 0" class="result__title">
-            Занятий нет
-        </h2>
     </div>
 </template>
 
@@ -19,11 +16,21 @@ export default {
     computed: {
         ...mapGetters(["schedules"]),
     },
+    mounted() {
+        this.$emit("moveUp");
+    },
+    updated() {
+        this.$emit("moveUp");
+    },
+    emits: ["moveUp"],
 };
 </script>
 
 <style lang="scss">
 .result {
+    background: var(--second-color);
+    border-radius: 15px;
+    padding: 45px;
     &__title {
         text-transform: capitalize;
         margin-top: 30px;
@@ -37,10 +44,10 @@ export default {
         width: 100%;
         max-width: 100%;
         overflow-x: auto;
+        margin-top: 30px;
     }
     &__table {
         width: 100%;
-        margin: 30px 0px;
         border-radius: 15px;
         border: 1px solid var(--border-color);
         border-spacing: 0;
@@ -95,6 +102,42 @@ export default {
                 color: var(--text-color);
                 span {
                     color: inherit;
+                }
+            }
+        }
+    }
+}
+@media screen and (max-width: 470px) {
+    .result {
+        padding: 30px 15px;
+        &__title {
+            font-size: 17px;
+        }
+        &__wrap {
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+        &__table {
+            // table-layout: auto;
+            border: none;
+            th,
+            td {
+                font-size: 10px;
+                padding: 10px 5px;
+                span {
+                    font-size: inherit;
+                }
+                &:nth-child(1) {
+                    width: 150px;
+                }
+                &:nth-child(2) {
+                    width: 200px;
+                }
+                &:nth-child(3) {
+                    width: 150px;
+                }
+                &:nth-child(4) {
+                    width: 100px;
                 }
             }
         }

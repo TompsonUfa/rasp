@@ -5,13 +5,23 @@
                 <div class="filters__content">
                     <h1 class="filters__title">Расписание занятий</h1>
                     <app-filters></app-filters>
-                    <post-form :dark="dark" @submitForm="$emit('submitForm')"></post-form>
+                    <post-form
+                        :dark="dark"
+                        @submitForm="$emit('submitForm')"
+                    ></post-form>
                 </div>
             </div>
         </section>
-        <section class="section section__schedule schedule" id="schedule" v-if="this.schedulesVisible">
+        <section
+            class="section section__schedule schedule"
+            id="schedule"
+            v-if="this.schedulesVisible"
+        >
             <div class="container">
-                <app-result class="schedule__result"></app-result>
+                <app-result
+                    @moveUp="$emit('moveUp', $event)"
+                    class="schedule__result"
+                ></app-result>
             </div>
         </section>
     </main>
@@ -34,18 +44,12 @@ export default {
     computed: {
         ...mapGetters(["schedulesVisible"]),
     },
+
     inheritAttrs: false,
+    emits: ["moveUp"],
 };
 </script>
 <style lang="scss" scoped>
-.schedule {
-    &__result {
-        background: var(--second-color);
-        border-radius: 15px;
-        padding: 45px;
-    }
-}
-
 .filters {
     &__title {
         font-size: 35px;

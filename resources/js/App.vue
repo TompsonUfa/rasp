@@ -1,6 +1,10 @@
 <template>
     <app-nav :dark="dark" @change-theme="changeTheme"></app-nav>
-    <app-content :dark="dark" @submitForm="submitForm"></app-content>
+    <app-content
+        @moveUp="moveUp"
+        :dark="dark"
+        @submitForm="submitForm"
+    ></app-content>
     <sections-menu
         @scrollToSection="scrollToSection"
         :activeSection="activeSection"
@@ -72,11 +76,7 @@ export default {
         //     });
         // },
     },
-    updated() {
-        // this.$nextTick(function () {
-        //     this.moveUp();
-        // });
-    },
+
     mounted() {
         this.calcSectionOffsets();
         this.fetchGroups();
