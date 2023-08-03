@@ -63,7 +63,7 @@ export default {
     &__content {
         background: var(--second-color);
         border-radius: 15px;
-        padding: 45px;
+        padding: 100px;
     }
 
     &__btns {
@@ -72,7 +72,13 @@ export default {
         gap: 30px;
     }
 }
-
+@media screen and (max-width: 768px) {
+    .filters {
+        &__content {
+            padding: 40px;
+        }
+    }
+}
 @media screen and (max-width: 590px) {
     .filters {
         &__btns {

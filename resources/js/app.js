@@ -12,6 +12,7 @@ const app = createApp({});
 
 import Index from "@/App.vue";
 import Admin from "@/admin/Index.vue";
+import Auth from "@/auth/Index.vue"
 import ImportView from "@/admin/views/ImportView.vue";
 import GroupsView from "@/admin/views/GroupsView.vue";
 import TeachersView from "@/admin/views/TeachersView.vue";
@@ -33,6 +34,7 @@ const router = createRouter({
 app.component('VueDatePicker', VueDatePicker);
 app.component("index-vue", Index);
 app.component("admin-vue", Admin);
+app.component("auth-vue", Auth);
 
 components.forEach((component) => {
     app.component(component.name, component);

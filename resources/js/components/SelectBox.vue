@@ -2,6 +2,7 @@
     <div class="select-box">
         <input type="checkbox" class="select-box__view" v-model="checked" />
         <div class="select-box__title">
+            <i class="bx bx-group select-box__icon"></i>
             <span>{{
                 this.activeOption ? this.activeOption.title : null
             }}</span>
@@ -99,6 +100,14 @@ export default {
 
     &__view:checked ~ &__options {
         display: block;
+    }
+    &__icon {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 13px;
+        color: var(--icon-color);
+        font-size: 17px;
     }
 }
 .dark {

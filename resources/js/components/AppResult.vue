@@ -1,6 +1,10 @@
 <template>
     <div class="result">
-        <result-item v-for="schedule in this.schedules" :key="schedule.id" :schedule="schedule"></result-item>
+        <result-item
+            v-for="schedule in this.schedules"
+            :key="schedule.id"
+            :schedule="schedule"
+        ></result-item>
     </div>
 </template>
 
@@ -27,7 +31,7 @@ export default {
     background: var(--second-color);
     border-radius: 15px;
     padding: 45px;
-
+    min-height: 100vh;
     &__title {
         text-transform: capitalize;
         margin-top: 30px;
