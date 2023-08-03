@@ -4,18 +4,28 @@
             <div class="sidebar__logo">
                 <a href="https://bifk.ru/">BIFK</a>
             </div>
-            <router-link class="sidebar__link" :to="{ name: 'Import' }">
-                Импорт расписания
-            </router-link>
-            <router-link class="sidebar__link" :to="{ name: 'Groups' }">
-                Учебные группы
-            </router-link>
-            <router-link class="sidebar__link" :to="{ name: 'Teachers' }">
-                Преподаватели
-            </router-link>
-            <router-link class="sidebar__link" :to="{ name: 'Categories' }">
-                Категории предметов
-            </router-link>
+            <ul class="sidebar__list">
+                <li class="sidebar__item">
+                    <router-link class="sidebar__link" :to="{ name: 'Import' }">
+                        Импорт расписания
+                    </router-link>
+                </li>
+                <li class="sidebar__item">
+                    <router-link class="sidebar__link" :to="{ name: 'Groups' }">
+                        Учебные группы
+                    </router-link>
+                </li>
+                <li class="sidebar__item">
+                    <router-link class="sidebar__link" :to="{ name: 'Teachers' }">
+                        Преподаватели
+                    </router-link>
+                </li>
+                <li class="sidebar__item">
+                    <router-link class="sidebar__link" :to="{ name: 'Categories' }">
+                        Категории предметов
+                    </router-link>
+                </li>
+            </ul>
         </div>
     </nav>
 </template>
@@ -32,6 +42,7 @@ export default {};
     border-right: 1px solid var(--body-color);
     transition: 0.4s;
     z-index: 500;
+
     &__content {
         height: 100vh;
         position: -webkit-sticky;
@@ -39,6 +50,7 @@ export default {};
         top: 0;
         left: 0;
     }
+
     &__logo {
         height: 100px;
         font-size: 30px;
@@ -46,10 +58,12 @@ export default {};
         display: flex;
         justify-content: center;
         align-items: center;
+
         a {
             color: #fff;
         }
     }
+
     &__link {
         font-size: 18px;
         display: block;
@@ -58,12 +72,27 @@ export default {};
         letter-spacing: 0.5px;
         color: #fff;
         transition: all 0.2s ease-in;
+
         &:hover {
             background: var(--first-color-alt);
         }
     }
+
     .router-link-active {
         background: var(--first-color-alt);
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .sidebar {
+        display: none;
+
+        .sidebar__open {
+            display: block;
+            position: fixed;
+            width: 100vw;
+            max-width: 100%;
+        }
     }
 }
 </style>

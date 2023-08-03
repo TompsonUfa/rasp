@@ -25,6 +25,6 @@ class LoginController extends Controller
             $request->session()->regenerate();
             return route('admin');
         }
-        return response()->json(["errors" => ['Данные не верны']], 422);
+        return response()->json(['errors' => [['password' => "Пароль не верный"]]], 422);
     }
 }
