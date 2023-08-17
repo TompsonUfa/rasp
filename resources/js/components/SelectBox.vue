@@ -1,13 +1,14 @@
 <template>
     <div class="select-box">
         <input type="checkbox" class="select-box__view" v-model="checked" />
+        <i class="bx bx-chevron-down"></i>
         <div class="select-box__title">
             <i class="bx bx-group select-box__icon"></i>
             <span>{{
                 this.activeOption ? this.activeOption.title : null
             }}</span>
         </div>
-        <i class="bx bx-chevron-down"></i>
+
         <select-options
             @toggle="toggle"
             class="select-box__options"
@@ -101,6 +102,10 @@ export default {
     &__view:checked ~ &__options {
         display: block;
     }
+    &__view:checked ~ i {
+        color: var(--first-color-alt);
+        transform: translateY(-50%) rotate(180deg);
+    }
     &__icon {
         position: absolute;
         top: 50%;
@@ -108,6 +113,9 @@ export default {
         left: 13px;
         color: var(--icon-color);
         font-size: 17px;
+    }
+    i {
+        transition: all 0.2s ease;
     }
 }
 .dark {

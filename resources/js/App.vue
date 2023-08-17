@@ -1,9 +1,17 @@
 <template>
     <app-nav :dark="dark" @change-theme="changeTheme"></app-nav>
-    <app-content @moveUp="moveUp" :dark="dark" @submitForm="submitForm"></app-content>
-    <sections-menu @scrollToSection="scrollToSection" :activeSection="activeSection" :offsets="offsets"></sections-menu>
+    <app-content
+        @move-up="moveUp"
+        :dark="dark"
+        @submit-form="submitForm"
+    ></app-content>
+    <sections-menu
+        @scrollToSection="scrollToSection"
+        :activeSection="activeSection"
+        :offsets="offsets"
+    ></sections-menu>
     <my-loader v-show="this.loading"></my-loader>
-    <modal-error @closeModal="this.closeModal" v-if="showModal"></modal-error>
+    <modal-error @closeModal="showModal = false" v-if="showModal"></modal-error>
     <button-up @click="scrollToTop" v-if="this.showBtnUp"></button-up>
 </template>
 
@@ -19,7 +27,7 @@ export default {
         AppNav,
         AppContent,
         SectionsMenu,
-        ModalError
+        ModalError,
     },
     computed: {
         ...mapGetters([
@@ -188,10 +196,6 @@ export default {
             }
             this.scrollToSection(this.activeSection, true);
         },
-        //modal 
-        closeModal() {
-            this.showModal = false;
-        }
     },
 };
 </script>

@@ -23,11 +23,7 @@ class SchedulesServices
             $filter = "teacher_id";
         }
 
-        $today = today();
-
-        $query = schedule::where($filter, "=", $itemId)->with(['teacher', 'category']);
-
-
+        $query = schedule::where($filter, "=", $itemId)->with(['teacher', 'group', 'category']);
         $query->whereBetween("date", [$date[0], $date[1]]);
 
         $schedules = collect($query->orderBy('date')->get())

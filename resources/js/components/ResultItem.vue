@@ -5,7 +5,14 @@
             <thead>
                 <tr>
                     <th>Время</th>
-                    <th>Предмет / Преподаватель</th>
+                    <th>
+                        Предмет /
+                        {{
+                            filter.name == "Учебные группы"
+                                ? "Преподаватель"
+                                : "Учебная группа"
+                        }}
+                    </th>
                     <th>Тип занятия</th>
                     <th>Аудитория</th>
                 </tr>
@@ -15,7 +22,11 @@
                     <td>{{ day.time }}</td>
                     <td>
                         {{ day.lesson }}
-                        <span>{{ day.teacher.title }}</span>
+                        <span>{{
+                            filter.name == "Учебные группы"
+                                ? day.teacher.title
+                                : day.group.title
+                        }}</span>
                     </td>
                     <td>
                         {{ day.category.title }}
@@ -30,12 +41,34 @@
 <script>
 import moment from "moment";
 import "moment/dist/locale/ru";
+import { mapGetters } from "vuex";
 export default {
     props: {
         schedule: {
             type: Array,
             required: true,
         },
+    },
+    data() {
+        return {
+            filter: "",
+        };
+    },
+    mounted() {
+        let reft = this;
+        for (let i = 0; i < this.filters.length; i++) {
+            if (this.filters[i].active) {
+                reft.filter = this.filters[i];
+            }
+        }
+    },
+    updated() {
+        let reft = this;
+        for (let i = 0; i < this.filters.length; i++) {
+            if (this.filters[i].active) {
+                reft.filter = this.filters[i];
+            }
+        }
     },
     computed: {
         day() {
@@ -51,6 +84,7 @@ export default {
                 a.position > b.position ? 1 : -1
             );
         },
+        ...mapGetters(["filters"]),
     },
 };
 </script>

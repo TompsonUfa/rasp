@@ -2,7 +2,7 @@
     <div class="content__panel panel">
         <h1 class="panel__title">{{ title }}</h1>
         <search-form></search-form>
-        <table-list :data=data></table-list>
+        <table-list :data="data"></table-list>
     </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
     props: { title: String, data: Array },
     components: {
         TableList,
-        SearchForm
+        SearchForm,
     },
 };
 </script>
@@ -27,6 +27,14 @@ export default {
 
     &__title {
         margin-bottom: 25px;
+    }
+}
+@media screen and (max-width: 700px) {
+    .panel {
+        padding: 15px;
+        &__title {
+            font-size: 20px;
+        }
     }
 }
 </style>

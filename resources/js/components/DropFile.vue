@@ -1,16 +1,34 @@
 <template>
     <div class="dropzone dropzone-container">
         <h1 class="dropzone__title">Загрузка расписания</h1>
-        <input @change="this.handleFileUpload" type="file" name="files" multiple="multiple" id="fileInput"
-            class="dropzone__hidden-input" />
-        <label for="fileInput" class="dropzone__file-label" :class="this.isDragging ? 'dropzone__file-label_active' : null"
-            @dragover="dragover" @dragleave="dragleave" @drop="drop">
+        <input
+            @change="this.handleFileUpload"
+            type="file"
+            name="files"
+            multiple="multiple"
+            id="fileInput"
+            class="dropzone__hidden-input"
+        />
+        <label
+            for="fileInput"
+            class="dropzone__file-label"
+            :class="this.isDragging ? 'dropzone__file-label_active' : null"
+            @dragover="dragover"
+            @dragleave="dragleave"
+            @drop="drop"
+        >
             <i class="bx bxs-cloud-upload"></i>
-            <span v-if="this.isDragging == false">Выбрать файл для загрузки</span>
+            <span v-if="this.isDragging == false"
+                >Выбрать файл для загрузки</span
+            >
             <span v-if="this.isDragging">Отпустите, чтобы загрузить файлы</span>
         </label>
         <div class="dropzone__files">
-            <div v-for="file in files" class="dropzone__file file">
+            <div
+                v-for="file in files"
+                :key="file.id"
+                class="dropzone__file file"
+            >
                 <i class="bx bxs-file"></i>
                 <div class="file__info">
                     <div class="file__text">
@@ -23,7 +41,10 @@
                         file.size + " КБ"
                     }}</span>
                     <div class="progress-bar" v-if="file.loaded == false">
-                        <div class="progress" :style="{ width: file.progress + '%' }"></div>
+                        <div
+                            class="progress"
+                            :style="{ width: file.progress + '%' }"
+                        ></div>
                     </div>
                 </div>
                 <div class="file__status" v-if="file.loaded">
@@ -104,7 +125,9 @@ export default {
         },
         async getData(file) {
             while (true) {
-                const { data } = await axios.get("admin/import-status/" + file.uuid);
+                const { data } = await axios.get(
+                    "admin/import-status/" + file.uuid
+                );
                 if (data.finished) {
                     file.progress = 100;
                     file.loaded = true;
@@ -115,7 +138,7 @@ export default {
                         (data.current_row / data.total_rows) * 100
                     );
                 }
-                await new Promise((resolve) => setTimeout(resolve, 1000)); // добавляем задержку, чтобы не перегружать сервер
+                await new Promise((resolve) => setTimeout(resolve, 1000));
             }
         },
     },
@@ -151,9 +174,9 @@ export default {
         justify-content: center;
         width: 100%;
         height: 200px;
-        border: 2px dashed var(--button-color);
+        border: 2px dashed var(--first-color-alt);
         border-radius: 12px;
-        color: var(--button-color);
+        color: var(--first-color-alt);
         font-size: 20px;
         margin-top: 40px;
         transition: 0.4s ease;
@@ -191,7 +214,7 @@ export default {
     background: rgba(0, 0, 0, 0.05);
 
     i {
-        color: var(--button-color);
+        color: var(--first-color-alt);
         font-size: 40px;
     }
 
@@ -217,7 +240,6 @@ export default {
         }
     }
 }
-
 .progress-bar {
     width: 100%;
     height: 10px;
@@ -229,6 +251,17 @@ export default {
         border-radius: 10px;
         transition: all 0.4s;
         background-color: var(--button-color);
+    }
+}
+@media screen and (max-width: 550px) {
+    .dropzone {
+        padding: 20px;
+        &__title {
+            font-size: 25px;
+        }
+        &__file-label {
+            font-size: 15px;
+        }
     }
 }
 </style>

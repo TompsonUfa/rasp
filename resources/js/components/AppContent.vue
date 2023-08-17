@@ -7,7 +7,7 @@
                     <app-filters></app-filters>
                     <post-form
                         :dark="dark"
-                        @submitForm="$emit('submitForm')"
+                        @submit-form="$emit('submit-form')"
                     ></post-form>
                 </div>
             </div>
@@ -19,7 +19,7 @@
         >
             <div class="container">
                 <app-result
-                    @moveUp="$emit('moveUp', $event)"
+                    @move-up="$emit('move-up', $event)"
                     class="schedule__result"
                 ></app-result>
             </div>
@@ -46,7 +46,7 @@ export default {
     },
 
     inheritAttrs: false,
-    emits: ["moveUp"],
+    emits: ["move-up", "submit-form"],
 };
 </script>
 <style lang="scss" scoped>

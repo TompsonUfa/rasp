@@ -17,12 +17,12 @@ export default {
         ...mapGetters(["schedules"]),
     },
     mounted() {
-        this.$emit("moveUp");
+        this.$emit("move-up");
     },
     updated() {
-        this.$emit("moveUp");
+        this.$emit("move-up");
     },
-    emits: ["moveUp"],
+    emits: ["move-up"],
 };
 </script>
 
@@ -56,7 +56,7 @@ export default {
         border: 1px solid var(--border-color);
         border-spacing: 0;
         table-layout: fixed;
-
+        overflow: hidden;
         &:last-child {
             margin-bottom: 0;
         }

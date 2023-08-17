@@ -1,9 +1,50 @@
 <template>
     <div class="wrapper">
-        <app-sidebar></app-sidebar>
+        <app-sidebar
+            :class="showSidebar ? 'sidebar_open' : null"
+            @close="showSidebar = false"
+        ></app-sidebar>
         <div class="main">
             <div class="content">
                 <div class="container">
+                    <div
+                        class="btn-toggle"
+                        @click="showSidebar = true"
+                        v-if="!showSidebar"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M4 18L20 18"
+                                    stroke="#000000"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                ></path>
+                                <path
+                                    d="M4 12L20 12"
+                                    stroke="#000000"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                ></path>
+                                <path
+                                    d="M4 6L20 6"
+                                    stroke="#000000"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                ></path>
+                            </g>
+                        </svg>
+                    </div>
                     <router-view />
                     <modal-edit v-if="this.modalEditStatus"></modal-edit>
                     <modal-remove v-if="this.modalRemoveStatus"></modal-remove>
@@ -25,70 +66,18 @@ export default {
         AppNav,
         AppSidebar,
         ModalRemove,
-        ModalEdit
+        ModalEdit,
     },
     computed: {
         ...mapGetters(["modalRemoveStatus"]),
         ...mapGetters(["modalEditStatus"]),
     },
-    destroyed() {
-        window.removeEventListener("scroll", this.handleScroll);
-    },
-    created() {
-        window.addEventListener("scroll", this.handleScroll);
-    },
+
     data() {
         return {
             showBtnUp: false,
-            themeMode: "",
+            showSidebar: false,
         };
-    },
-    mounted() {
-        const initUserTheme = this.getTheme() || this.getMediaPreference();
-        this.themeMode = initUserTheme;
-        this.setTheme(initUserTheme);
-    },
-    methods: {
-        setTheme(theme) {
-            localStorage.setItem("theme-mode", theme);
-            this.themeMode = theme;
-            if (theme === "dark") {
-                document.body.classList.add("dark");
-            } else {
-                document.body.classList.remove("dark");
-            }
-        },
-        changeTheme() {
-            const themeMode = this.themeMode;
-            if (themeMode === "dark") {
-                this.setTheme("light");
-            } else {
-                this.setTheme("dark");
-            }
-        },
-        getMediaPreference() {
-            const hasDarkPreference = window.matchMedia(
-                "(prefers-color-scheme: dark)"
-            ).matches;
-            if (hasDarkPreference) {
-                return "darm";
-            } else {
-                return "light";
-            }
-        },
-        getTheme() {
-            return localStorage.getItem("theme-mode");
-        },
-        handleScroll() {
-            if (window.scrollY > 200) {
-                this.showBtnUp = true;
-            } else {
-                this.showBtnUp = false;
-            }
-        },
-        scrollToTop() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        },
     },
 };
 </script>
@@ -111,5 +100,24 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.btn-toggle {
+    display: none;
+}
+@media screen and (max-width: 900px) {
+    .btn-toggle {
+        display: block;
+        width: 45px;
+        height: 45px;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+        svg {
+            path {
+                stroke: var(--first-color-alt);
+            }
+        }
+    }
 }
 </style>

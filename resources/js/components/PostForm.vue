@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="$emit('submitForm')" method="post" class="form">
+    <form @submit.prevent="$emit('submit-form')" method="post" class="form">
         <select-box class="form__select"></select-box>
         <VueDatePicker
             :dark="this.dark"
@@ -108,6 +108,7 @@ export default {
             return result;
         },
     },
+    emits: ["submit-form"],
 };
 </script>
 
@@ -131,6 +132,15 @@ export default {
     display: flex;
     justify-content: end;
     width: 100%;
+}
+.dp__input_focus ~ svg {
+    fill: var(--first-color-alt);
+}
+.dp__input_focus {
+    border: 1px solid var(--dp-border-color);
+}
+svg {
+    transition: all 0.2s ease;
 }
 @media screen and (max-width: 550px) {
     .dp__menu_content_wrapper {
