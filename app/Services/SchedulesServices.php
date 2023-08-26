@@ -37,7 +37,7 @@ class SchedulesServices
         $id = $request->get('uuid');
         $file = $request->file('file');
         $filePath = $file->store('temp');
-
+        $filter = $request->get('filter') === "true" ? true : false;
         $object = (object)["id" => $id];
 
         $data = $request->session()->get('import');
@@ -49,6 +49,6 @@ class SchedulesServices
 
         $request->session()->save();
 
-        Bus::dispatch(new ImportExcel($filePath, $id));
+        Bus::dispatch(new ImportExcel($filePath, $id, $filter));
     }
 }

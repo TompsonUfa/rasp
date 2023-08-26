@@ -10,7 +10,6 @@ use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SchedulesImport;
 
-
 class ImportExcel implements ShouldQueue
 {
 
@@ -18,13 +17,15 @@ class ImportExcel implements ShouldQueue
 
     protected $file;
     protected $id;
+    protected $filter;
     /**
      * Create a new job instance.
      */
-    public function __construct($filePath, $id)
+    public function __construct($filePath, $id, $filter)
     {
         $this->file = $filePath;
         $this->id = $id;
+        $this->filter = $filter;
     }
 
     /**
@@ -32,6 +33,6 @@ class ImportExcel implements ShouldQueue
      */
     public function handle(): void
     {
-        Excel::import(new SchedulesImport($this->id), $this->file);
+        Excel::import(new SchedulesImport($this->id, $this->filter), $this->file);
     }
 }

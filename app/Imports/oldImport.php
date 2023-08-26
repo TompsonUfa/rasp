@@ -14,52 +14,49 @@ use Maatwebsite\Excel\Events\BeforeImport;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\SkipsUnknownSheets;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class SchedulesImport implements WithMultipleSheets, WithEvents, SkipsUnknownSheets
+class SchedulesImport implements WithMultipleSheets, WithEvents
 {
     protected $id;
     protected $sheets = [];
     protected $totalRows;
-    protected $filter;
-    public function __construct($id, $filter)
+    public function __construct($id)
     {
         $this->id = $id;
-        $this->filter = $filter;
-        if ($filter){
-              // текущая неделя
-              $today = today();
-              $weekStartDate = $today->startOfWeek()->format('d.m');
-              $weekEndDate = $today->endOfWeek()->format('d.m.Y');
-              $firstOptionWeek = $weekStartDate . "-" . $weekEndDate;
-              $secondOptionWeek = $weekStartDate . " -" . $weekEndDate;
-              $thirdOptionWeek = $weekStartDate . "- " . $weekEndDate;
-              $fourthOptionWeek = $weekStartDate . " - " . $weekEndDate;
-  
-          // след. неделя
-              $today = today();
-              $today->addDays(7);
-              $weekStartDate = $today->startOfWeek()->format('d.m');
-              $weekEndDate = $today->endOfWeek()->format('d.m.Y');
-              $firstOptionNextWeek = $weekStartDate . "-" . $weekEndDate;
-              $secondOptionNextWeek = $weekStartDate . " -" . $weekEndDate;
-              $thirdOptionNextWeek = $weekStartDate . "- " . $weekEndDate;
-              $fourthOptionNextWeek = $weekStartDate . " - " . $weekEndDate;
-          
-          array_push(
-              $this->sheets,
-              $firstOptionWeek,
-              $secondOptionWeek,
-              $thirdOptionWeek,
-              $fourthOptionWeek,
-              $firstOptionNextWeek,
-              $secondOptionNextWeek,
-              $thirdOptionNextWeek,
-              $fourthOptionNextWeek,
-              "Активный",
-          );
-        }
+
+        // текущая неделя
+            $today = today();
+            $weekStartDate = $today->startOfWeek()->format('d.m');
+            $weekEndDate = $today->endOfWeek()->format('d.m.Y');
+            $firstOptionWeek = $weekStartDate . "-" . $weekEndDate;
+            $secondOptionWeek = $weekStartDate . " -" . $weekEndDate;
+            $thirdOptionWeek = $weekStartDate . "- " . $weekEndDate;
+            $fourthOptionWeek = $weekStartDate . " - " . $weekEndDate;
+
+        // след. неделя
+            $today = today();
+            $today->addDays(7);
+            $weekStartDate = $today->startOfWeek()->format('d.m');
+            $weekEndDate = $today->endOfWeek()->format('d.m.Y');
+            $firstOptionNextWeek = $weekStartDate . "-" . $weekEndDate;
+            $secondOptionNextWeek = $weekStartDate . " -" . $weekEndDate;
+            $thirdOptionNextWeek = $weekStartDate . "- " . $weekEndDate;
+            $fourthOptionNextWeek = $weekStartDate . " - " . $weekEndDate;
+        
+        array_push(
+            $this->sheets,
+            $firstOptionWeek,
+            $secondOptionWeek,
+            $thirdOptionWeek,
+            $fourthOptionWeek,
+            $firstOptionNextWeek,
+            $secondOptionNextWeek,
+            $thirdOptionNextWeek,
+            $fourthOptionNextWeek,
+            "Активный",
+        );
     }
 
     public function registerEvents(): array
@@ -67,8 +64,7 @@ class SchedulesImport implements WithMultipleSheets, WithEvents, SkipsUnknownShe
         return [
             BeforeImport::class => function (BeforeImport $event) {
                 $reader = $event->reader;
-                $countList = $this->filter ? $this->sheets : $reader->getSheetNames();
-                foreach ($countList as $sheet) {
+                foreach ($this->sheets as $sheet) {
                     if ($reader->sheetNameExists($sheet)) {
                         $this->totalRows += $reader->getSheetByName($sheet)->getHighestRow();
                     }
@@ -81,28 +77,18 @@ class SchedulesImport implements WithMultipleSheets, WithEvents, SkipsUnknownShe
             },
         ];
     }
-    public function onUnknownSheet($sheetName)
-    {
-        info("Sheet {$sheetName} was skipped");
-    }
+
     public function sheets(): array
     {
-        $numberOfSheets = 50;
         $sheetImports = [];
-        if ($this->filter){
-            foreach ($this->sheets as $sheet) {
-                $sheetImports[$sheet] = new ActiveSheetImport($this->id);
-            }
-        } else {
-            for($i = 0; $i < $numberOfSheets; $i++){
-                $sheetImports[$i] = new ActiveSheetImport($this->id);
-            }
+        foreach ($this->sheets as $sheet) {
+            $sheetImports[$sheet] = new ActiveSheetImport($this->id);
         }
         return $sheetImports;
     }
 }
 
-class ActiveSheetImport implements ToCollection, WithStartRow, WithChunkReading
+class ActiveSheetImport implements ToCollection, WithStartRow, SkipsUnknownSheets, WithChunkReading
 {
 
     public $groupId;
@@ -114,6 +100,11 @@ class ActiveSheetImport implements ToCollection, WithStartRow, WithChunkReading
     public function __construct($id)
     {
         $this->id = $id;
+    }
+
+    public function onUnknownSheet($sheetName)
+    {
+        info("Sheet {$sheetName} was skipped");
     }
 
     public function chunkSize(): int

@@ -1,19 +1,9 @@
 <template>
     <form @submit.prevent="$emit('submit-form')" method="post" class="form">
         <select-box class="form__select"></select-box>
-        <VueDatePicker
-            :dark="this.dark"
-            v-model="date"
-            locale="ru"
-            cancelText="Закрыть"
-            selectText="Выбрать"
-            range
-            :partial-range="false"
-            placeholder="Выбрать дату"
-            :enable-time-picker="false"
-            :format="format"
-            :preset-ranges="presetRanges"
-        >
+        <VueDatePicker :dark="this.dark" v-model="date" locale="ru" cancelText="Закрыть" selectText="Выбрать" range
+            :partial-range="false" placeholder="Выбрать дату" :enable-time-picker="false" :format="format"
+            :preset-ranges="presetRanges">
             <template #yearly="{ label, range, presetDateRange }">
                 <span @click="presetDateRange(range)">{{ label }}</span>
             </template>
@@ -94,7 +84,7 @@ export default {
                     (date[i].getDate() < 10 ? "0" : "") +
                     date[i].getDate() +
                     "." +
-                    (date[i].getMonth() < 10 ? "0" : "") +
+                    (date[i].getMonth() + 1 < 10 ? "0" : "") +
                     (date[i].getMonth() + 1) +
                     "." +
                     date[i].getFullYear();
@@ -117,31 +107,39 @@ export default {
     &__select {
         margin: 30px 0;
     }
+
     &__controls {
         text-align: center;
         margin-top: 30px;
     }
+
     .dp__input {
         height: 56px;
     }
+
     .dp__input:hover {
         border-color: var(--first-color-alt);
     }
 }
+
 .action-row {
     display: flex;
     justify-content: end;
     width: 100%;
 }
-.dp__input_focus ~ svg {
+
+.dp__input_focus~svg {
     fill: var(--first-color-alt);
 }
+
 .dp__input_focus {
     border: 1px solid var(--dp-border-color);
 }
+
 svg {
     transition: all 0.2s ease;
 }
+
 @media screen and (max-width: 550px) {
     .dp__menu_content_wrapper {
         display: block;
