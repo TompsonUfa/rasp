@@ -1,5 +1,5 @@
 <template>
-    <div class="option" v-if="option.title.length > 1">
+    <div class="option">
         <input class="option__input" type="radio" name="option" :value="option.id" :checked="option.id === activeOption.id"
             @change="this.setActive(option)" @click="$emit('toggle')" />
         <div class="option__text">

@@ -121,7 +121,7 @@ export default {
                     let formData = new FormData();
                     formData.append("file", this.files[i].file);
                     formData.append("uuid", this.files[i].uuid);
-                    formData.append("filter", activeFilter);
+                    formData.append("filter", this.activeFilter);
                     await axios
                         .post("/admin/create", formData, {
                             headers: {

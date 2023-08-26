@@ -14,7 +14,7 @@ class TeachersController extends Controller
     public function index()
     {
         return response()->json([
-            'teachers' => Teacher::all(),
+            'teachers' => Teacher::where("title", "!=", "-")->get(),
         ], 200);
     }
 
