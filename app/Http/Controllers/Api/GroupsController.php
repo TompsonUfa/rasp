@@ -14,7 +14,7 @@ class GroupsController extends Controller
     public function index()
     {
         return response()->json([
-            'groups' => Group::all(),
+            'groups' => Group::orderBy('title')->get(),
         ], 200);
     }
 
