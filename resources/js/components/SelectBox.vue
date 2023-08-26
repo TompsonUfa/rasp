@@ -9,10 +9,7 @@
             }}</span>
         </div>
 
-        <select-options
-            @toggle="toggle"
-            class="select-box__options"
-        ></select-options>
+        <select-options @toggle="toggle" class="select-box__options"></select-options>
     </div>
 </template>
 
@@ -45,6 +42,7 @@ export default {
 .select-box {
     position: relative;
     width: 100%;
+
     .bx-chevron-down {
         position: absolute;
         width: 40px;
@@ -58,6 +56,7 @@ export default {
         font-size: 1.5rem;
         color: var(--icon-color);
     }
+
     &__view {
         position: absolute;
         top: 0;
@@ -68,7 +67,7 @@ export default {
         cursor: pointer;
     }
 
-    &__view:hover ~ &__title {
+    &__view:hover~&__title {
         border-color: var(--first-color-alt);
     }
 
@@ -99,13 +98,15 @@ export default {
         border-radius: 10px;
     }
 
-    &__view:checked ~ &__options {
+    &__view:checked~&__options {
         display: block;
     }
-    &__view:checked ~ i {
+
+    &__view:checked~i {
         color: var(--first-color-alt);
         transform: translateY(-50%) rotate(180deg);
     }
+
     &__icon {
         position: absolute;
         top: 50%;
@@ -114,10 +115,12 @@ export default {
         color: var(--icon-color);
         font-size: 17px;
     }
+
     i {
         transition: all 0.2s ease;
     }
 }
+
 .dark {
     .select-box {
         &__title {
@@ -125,6 +128,7 @@ export default {
             border: 1px solid #2d2d2d;
             color: var(--text-color);
         }
+
         &__options {
             background: var(--body-color);
         }

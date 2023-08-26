@@ -1,34 +1,16 @@
 <template>
     <div class="dropzone dropzone-container">
         <h1 class="dropzone__title">Загрузка расписания</h1>
-        <input
-            @change="this.handleFileUpload"
-            type="file"
-            name="files"
-            multiple="multiple"
-            id="fileInput"
-            class="dropzone__hidden-input"
-        />
-        <label
-            for="fileInput"
-            class="dropzone__file-label"
-            :class="this.isDragging ? 'dropzone__file-label_active' : null"
-            @dragover="dragover"
-            @dragleave="dragleave"
-            @drop="drop"
-        >
+        <input @change="this.handleFileUpload" type="file" name="files" multiple="multiple" id="fileInput"
+            class="dropzone__hidden-input" />
+        <label for="fileInput" class="dropzone__file-label" :class="this.isDragging ? 'dropzone__file-label_active' : null"
+            @dragover="dragover" @dragleave="dragleave" @drop="drop">
             <i class="bx bxs-cloud-upload"></i>
-            <span v-if="this.isDragging == false"
-                >Выбрать файл для загрузки</span
-            >
+            <span v-if="this.isDragging == false">Выбрать файл для загрузки</span>
             <span v-if="this.isDragging">Отпустите, чтобы загрузить файлы</span>
         </label>
         <div class="dropzone__files">
-            <div
-                v-for="file in files"
-                :key="file.id"
-                class="dropzone__file file"
-            >
+            <div v-for="file in files" :key="file.id" class="dropzone__file file">
                 <i class="bx bxs-file"></i>
                 <div class="file__info">
                     <div class="file__text">
@@ -41,10 +23,7 @@
                         file.size + " КБ"
                     }}</span>
                     <div class="progress-bar" v-if="file.loaded == false">
-                        <div
-                            class="progress"
-                            :style="{ width: file.progress + '%' }"
-                        ></div>
+                        <div class="progress" :style="{ width: file.progress + '%' }"></div>
                     </div>
                 </div>
                 <div class="file__status" v-if="file.loaded">
@@ -126,7 +105,7 @@ export default {
         async getData(file) {
             while (true) {
                 const { data } = await axios.get(
-                    "admin/import-status/" + file.uuid
+                    "/admin/import-status/" + file.uuid
                 );
                 if (data.finished) {
                     file.progress = 100;
@@ -240,6 +219,7 @@ export default {
         }
     }
 }
+
 .progress-bar {
     width: 100%;
     height: 10px;
@@ -253,12 +233,15 @@ export default {
         background-color: var(--button-color);
     }
 }
+
 @media screen and (max-width: 550px) {
     .dropzone {
         padding: 20px;
+
         &__title {
             font-size: 25px;
         }
+
         &__file-label {
             font-size: 15px;
         }

@@ -1,14 +1,7 @@
 <template>
-    <div class="option">
-        <input
-            class="option__input"
-            type="radio"
-            name="option"
-            :value="option.id"
-            :checked="option.id == 1 && option == activeOption"
-            @change="this.setActive(option)"
-            @click="$emit('toggle')"
-        />
+    <div class="option" v-if="option.title.length > 1">
+        <input class="option__input" type="radio" name="option" :value="option.id" :checked="option.id === activeOption.id"
+            @change="this.setActive(option)" @click="$emit('toggle')" />
         <div class="option__text">
             <i class="bx bx-group"></i> <span>{{ option.title }}</span>
         </div>
@@ -49,25 +42,31 @@ export default {
     padding: 12px 14px;
     transition: 0.3s;
     cursor: pointer;
+
     i {
         font-size: 20px;
     }
+
     &:hover {
         color: #fff;
         background-color: var(--first-color-alt);
+
         i {
             animation: moveUp 0.3s ease;
             animation-iteration-count: 1;
         }
     }
+
     @keyframes moveUp {
         0% {
             padding-top: 40px;
         }
+
         100% {
             padding-top: 0px;
         }
     }
+
     &__input {
         cursor: pointer;
         position: absolute;
@@ -78,16 +77,20 @@ export default {
         opacity: 0;
         z-index: 3;
         color: var(--text-color);
-        &:checked ~ .option__bg {
+
+        &:checked~.option__bg {
             background-color: var(--first-color-alt);
         }
-        &:checked ~ .option__text {
+
+        &:checked~.option__text {
             color: #fff;
         }
-        &:hover ~ .option__text {
+
+        &:hover~.option__text {
             color: #fff;
         }
     }
+
     &__text {
         position: relative;
         display: flex;
@@ -96,6 +99,7 @@ export default {
         z-index: 2;
         color: var(--text-color);
     }
+
     &__bg {
         pointer-events: none;
         position: absolute;
@@ -106,6 +110,7 @@ export default {
         z-index: 1;
     }
 }
+
 .dark {
     .option {
         color: var(--text-white);
