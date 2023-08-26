@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\schedule;
+use App\Models\Schedule;
 use App\Jobs\ImportExcel;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -23,7 +23,7 @@ class SchedulesServices
             $filter = "teacher_id";
         }
 
-        $query = schedule::where($filter, "=", $itemId)->with(['teacher', 'group', 'category']);
+        $query = Schedule::where($filter, "=", $itemId)->with(['teacher', 'group', 'category']);
         $query->whereBetween("date", [$date[0], $date[1]]);
 
         $schedules = collect($query->orderBy('date')->get())
