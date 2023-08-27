@@ -331,7 +331,7 @@ export default {
         height: 100%;
         border-radius: 10px;
         transition: all 0.4s;
-        background-color: var(--title-color);
+        background-color: var(--first-color-alt);
     }
 }
 
