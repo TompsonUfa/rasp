@@ -331,7 +331,7 @@ export default {
         height: 100%;
         border-radius: 10px;
         transition: all 0.4s;
-        background-color: var(--button-color);
+        background-color: var(--title-color);
     }
 }
 

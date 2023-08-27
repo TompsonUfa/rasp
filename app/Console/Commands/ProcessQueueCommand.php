@@ -40,9 +40,8 @@ class ProcessQueueCommand extends Command
             try{
                 Artisan::call('queue:work');
             } catch (\Error $e){
-                
+
             }
-           
         }
     }
 }
