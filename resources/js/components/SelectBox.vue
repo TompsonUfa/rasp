@@ -8,7 +8,6 @@
                 this.activeOption ? this.activeOption.title : null
             }}</span>
         </div>
-
         <select-options @toggle="toggle" class="select-box__options"></select-options>
     </div>
 </template>
@@ -28,11 +27,7 @@ export default {
     },
     methods: {
         toggle() {
-            if (this.checked) {
-                this.checked = false;
-            } else {
-                this.checked = true;
-            }
+            this.checked = !this.checked
         },
     },
 };
@@ -55,6 +50,7 @@ export default {
         transform: translateY(-50%);
         font-size: 1.5rem;
         color: var(--icon-color);
+        pointer-events: none;
     }
 
     &__view {

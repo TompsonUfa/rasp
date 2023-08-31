@@ -65,7 +65,6 @@ export default {
             newDate.forEach((element) => {
                 date.push(this.formatDate(element));
             });
-
             this.setDate(date);
         },
     },
@@ -119,6 +118,10 @@ export default {
 
     .dp__input:hover {
         border-color: var(--first-color-alt);
+    }
+
+    .dp__clear_icon {
+        display: none;
     }
 }
 

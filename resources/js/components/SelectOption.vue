@@ -34,7 +34,7 @@ export default {
     position: relative;
     overflow: hidden;
     max-height: 44px;
-    transition: 0.3s ease all;
+    transition: 0.3s ease all !important;
     display: flex;
     align-items: center;
     column-gap: 20px;
@@ -50,21 +50,6 @@ export default {
     &:hover {
         color: #fff;
         background-color: var(--first-color-alt);
-
-        i {
-            animation: moveUp 0.3s ease;
-            animation-iteration-count: 1;
-        }
-    }
-
-    @keyframes moveUp {
-        0% {
-            padding-top: 40px;
-        }
-
-        100% {
-            padding-top: 0px;
-        }
     }
 
     &__input {
