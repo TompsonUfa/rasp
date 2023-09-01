@@ -8,7 +8,10 @@
                 this.activeOption ? this.activeOption.title : null
             }}</span>
         </div>
-        <select-options @toggle="toggle" class="select-box__options"></select-options>
+        <select-options
+            @toggle="toggle"
+            class="select-box__options"
+        ></select-options>
     </div>
 </template>
 
@@ -27,7 +30,7 @@ export default {
     },
     methods: {
         toggle() {
-            this.checked = !this.checked
+            this.checked = !this.checked;
         },
     },
 };
@@ -63,7 +66,7 @@ export default {
         cursor: pointer;
     }
 
-    &__view:hover~&__title {
+    &__view:hover ~ &__title {
         border-color: var(--first-color-alt);
     }
 
@@ -94,11 +97,11 @@ export default {
         border-radius: 10px;
     }
 
-    &__view:checked~&__options {
+    &__view:checked ~ &__options {
         display: block;
     }
 
-    &__view:checked~i {
+    &__view:checked ~ i {
         color: var(--first-color-alt);
         transform: translateY(-50%) rotate(180deg);
     }
@@ -116,7 +119,6 @@ export default {
         transition: all 0.2s ease;
     }
 }
-
 .dark {
     .select-box {
         &__title {
@@ -127,6 +129,13 @@ export default {
 
         &__options {
             background: var(--body-color);
+        }
+    }
+}
+@media screen and (max-width: 550px) {
+    .select-box {
+        &__options {
+            max-height: 200px;
         }
     }
 }
