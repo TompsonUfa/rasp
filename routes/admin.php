@@ -1,9 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\GroupsController;
-use App\Http\Controllers\TeachersController;
-use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\CategoryController;
 
 Route::post('/create', [AdminController::class, 'create']);
 
@@ -11,14 +11,14 @@ Route::get('/{name?}', [AdminController::class, 'index'])->where('name', '[A-Za-
 
 Route::get('/import-status/{filename}', [AdminController::class, 'status']);
 
-Route::get('/data/groups', [GroupsController::class, 'show']);
-Route::post('/data/groups/delete', [GroupsController::class, 'delete']);
-Route::post('/data/groups/edit', [GroupsController::class, 'edit']);
+Route::get('/data/groups', [GroupController::class, 'show']);
+Route::post('/data/groups/delete', [GroupController::class, 'delete']);
+Route::post('/data/groups/edit', [GroupController::class, 'edit']);
 
-Route::get('/data/teachers', [TeachersController::class, 'show']);
-Route::post('/data/teachers/delete', [TeachersController::class, 'delete']);
-Route::post('/data/teachers/edit', [TeachersController::class, 'edit']);
+Route::get('/data/teachers', [TeacherController::class, 'show']);
+Route::post('/data/teachers/delete', [TeacherController::class, 'delete']);
+Route::post('/data/teachers/edit', [TeacherController::class, 'edit']);
 
-Route::get('/data/categories', [CategoriesController::class, 'show']);
-Route::post('/data/categories/delete', [CategoriesController::class, 'delete']);
-Route::post('/data/categories/edit', [CategoriesController::class, 'edit']);
+Route::get('/data/categories', [CategoryController::class, 'show']);
+Route::post('/data/categories/delete', [CategoryController::class, 'delete']);
+Route::post('/data/categories/edit', [CategoryController::class, 'edit']);

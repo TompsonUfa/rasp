@@ -4,14 +4,14 @@ namespace App\Services;
 
 use App\Models\Group;
 
-class GroupsServices
+class GroupService
 {
     public function getListWithSearch($search)
     {
         if (empty($search)){
-            $groups = Group::get(); 
+            $groups = Group::get();
         } else {
-            $groups = Group::where('title', 'LIKE', '%' . $search . '%')->get(); 
+            $groups = Group::where('title', 'LIKE', '%' . $search . '%')->get();
         }
         return $groups;
     }

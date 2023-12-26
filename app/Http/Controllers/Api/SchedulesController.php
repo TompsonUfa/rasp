@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\SchedulesServices;
+use App\Services\ScheduleService;
 
 class SchedulesController extends Controller
 {
@@ -18,7 +18,7 @@ class SchedulesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, SchedulesServices $service)
+    public function store(Request $request, ScheduleService $service)
     {
         $schedule = $service->show($request);
         return response()->json($schedule, 200);

@@ -15,9 +15,9 @@ class ImportExcel implements ShouldQueue
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $file;
-    protected $id;
-    protected $filter;
+    private $file;
+    private $id;
+    private $filter;
     /**
      * Create a new job instance.
      */

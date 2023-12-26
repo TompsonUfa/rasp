@@ -4,14 +4,14 @@ namespace App\Services;
 
 use App\Models\Category;
 
-class CategoriesServices
+class CategoryService
 {
     public function getListWithSearch($search)
     {
         if (empty($search)){
-            $Categories = Category::get(); 
+            $Categories = Category::get();
         } else {
-            $Categories = Category::where('title', 'LIKE', '%' . $search . '%')->get(); 
+            $Categories = Category::where('title', 'LIKE', '%' . $search . '%')->get();
         }
         return $Categories;
     }

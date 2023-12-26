@@ -3,30 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\GroupsServices;
+use App\Services\GroupService;
 
-class GroupsController extends Controller
+class GroupController extends Controller
 {
-    public function show(Request $request, GroupsServices $service)
+    public function show(Request $request, GroupService $service)
     {
         $search = $request->get('search');
 
-        $group = $service->getListWithSearch($search);
-        
-        return $group;
+        return $service->getListWithSearch($search);
     }
-    public function delete(Request $request, GroupsServices $service)
+    public function delete(Request $request, GroupService $service)
     {
         $itemId = $request->get('itemId');
-        
+
         return $service->deleteGroup($itemId);
     }
 
-    public function edit(Request $request, GroupsServices $service)
+    public function edit(Request $request, GroupService $service)
     {
         $itemId = $request->get('itemId');
         $newValue = $request->get('value');
-        
+
         return $service->editGroup($itemId, $newValue);
     }
 }

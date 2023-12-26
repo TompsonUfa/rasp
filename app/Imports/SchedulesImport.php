@@ -23,42 +23,43 @@ class SchedulesImport implements WithMultipleSheets, WithEvents, SkipsUnknownShe
     protected $sheets = [];
     protected $totalRows;
     protected $filter;
+
     public function __construct($id, $filter)
     {
         $this->id = $id;
         $this->filter = $filter;
-        if ($filter){
-              // текущая неделя
-              $today = today();
-              $weekStartDate = $today->startOfWeek()->format('d.m');
-              $weekEndDate = $today->endOfWeek()->format('d.m.Y');
-              $firstOptionWeek = $weekStartDate . "-" . $weekEndDate;
-              $secondOptionWeek = $weekStartDate . " -" . $weekEndDate;
-              $thirdOptionWeek = $weekStartDate . "- " . $weekEndDate;
-              $fourthOptionWeek = $weekStartDate . " - " . $weekEndDate;
-  
-          // след. неделя
-              $today = today();
-              $today->addDays(7);
-              $weekStartDate = $today->startOfWeek()->format('d.m');
-              $weekEndDate = $today->endOfWeek()->format('d.m.Y');
-              $firstOptionNextWeek = $weekStartDate . "-" . $weekEndDate;
-              $secondOptionNextWeek = $weekStartDate . " -" . $weekEndDate;
-              $thirdOptionNextWeek = $weekStartDate . "- " . $weekEndDate;
-              $fourthOptionNextWeek = $weekStartDate . " - " . $weekEndDate;
-          
-          array_push(
-              $this->sheets,
-              $firstOptionWeek,
-              $secondOptionWeek,
-              $thirdOptionWeek,
-              $fourthOptionWeek,
-              $firstOptionNextWeek,
-              $secondOptionNextWeek,
-              $thirdOptionNextWeek,
-              $fourthOptionNextWeek,
-              "Активный",
-          );
+        if ($filter) {
+            // текущая неделя
+            $today = today();
+            $weekStartDate = $today->startOfWeek()->format('d.m');
+            $weekEndDate = $today->endOfWeek()->format('d.m.Y');
+            $firstOptionWeek = $weekStartDate . "-" . $weekEndDate;
+            $secondOptionWeek = $weekStartDate . " -" . $weekEndDate;
+            $thirdOptionWeek = $weekStartDate . "- " . $weekEndDate;
+            $fourthOptionWeek = $weekStartDate . " - " . $weekEndDate;
+
+            // след. неделя
+            $today = today();
+            $today->addDays(7);
+            $weekStartDate = $today->startOfWeek()->format('d.m');
+            $weekEndDate = $today->endOfWeek()->format('d.m.Y');
+            $firstOptionNextWeek = $weekStartDate . "-" . $weekEndDate;
+            $secondOptionNextWeek = $weekStartDate . " -" . $weekEndDate;
+            $thirdOptionNextWeek = $weekStartDate . "- " . $weekEndDate;
+            $fourthOptionNextWeek = $weekStartDate . " - " . $weekEndDate;
+
+            array_push(
+                $this->sheets,
+                $firstOptionWeek,
+                $secondOptionWeek,
+                $thirdOptionWeek,
+                $fourthOptionWeek,
+                $firstOptionNextWeek,
+                $secondOptionNextWeek,
+                $thirdOptionNextWeek,
+                $fourthOptionNextWeek,
+                "Активный",
+            );
         }
     }
 
@@ -73,28 +74,30 @@ class SchedulesImport implements WithMultipleSheets, WithEvents, SkipsUnknownShe
                         $this->totalRows += $reader->getSheetByName($sheet)->getHighestRow();
                     }
                 }
-                cache()->put("total_rows_{$this->id}", $this->totalRows,  60 * 60 * 24);
-                cache()->put("start_date_{$this->id}", now()->unix(),  60 * 60 * 24);
+                cache()->put("total_rows_{$this->id}", $this->totalRows, 60 * 60 * 24);
+                cache()->put("start_date_{$this->id}", now()->unix(), 60 * 60 * 24);
             },
             AfterImport::class => function (AfterImport $event) {
-                cache()->put("end_date_{$this->id}", now()->unix(),  60 * 60 * 24);
+                cache()->put("end_date_{$this->id}", now()->unix(), 60 * 60 * 24);
             },
         ];
     }
+
     public function onUnknownSheet($sheetName)
     {
         info("Sheet {$sheetName} was skipped");
     }
+
     public function sheets(): array
     {
         $numberOfSheets = 50;
         $sheetImports = [];
-        if ($this->filter){
+        if ($this->filter) {
             foreach ($this->sheets as $sheet) {
                 $sheetImports[$sheet] = new ActiveSheetImport($this->id);
             }
         } else {
-            for($i = 0; $i < $numberOfSheets; $i++){
+            for ($i = 0; $i < $numberOfSheets; $i++) {
                 $sheetImports[$i] = new ActiveSheetImport($this->id);
             }
         }
@@ -188,83 +191,89 @@ class ActiveSheetImport implements ToCollection, WithStartRow, WithChunkReading
         }
     }
 
-    public function collection(Collection $rows,)
+    /**
+     * @throws \Exception
+     */
+    public function collection(Collection $rows)
     {
-
-        $position = 0;
-        $i = 0;
-
-        foreach ($rows as $row_index => $row) {
-            if ($row_index == 0) {
-                $nameGroup = trim($row[2]);
-                $group = Group::where('title', '=', $nameGroup)->first();
-                if (empty($group)) {
-                    $group = Group::create([
-                        'title' => $nameGroup,
-                    ]);
-                }
-                $this->groupId = $group->id;
-                if (((int) cache("current_row_{$this->id}")) == 0) {
-                    $i = $row_index + 5;
+        try {
+            $position = 0;
+            $i = 0;
+            foreach ($rows as $row_index => $row) {
+                if ($row_index == 0) {
+                    $nameGroup = trim($row[2]);
+                    $group = Group::where('title', '=', $nameGroup)->first();
+                    if (empty($group)) {
+                        $group = Group::create([
+                            'title' => $nameGroup,
+                        ]);
+                    }
+                    $this->groupId = $group->id;
+                    if (((int)cache("current_row_{$this->id}")) == 0) {
+                        $i = $row_index + 5;
+                    } else {
+                        $i = (int)cache("current_row_{$this->id}");
+                        $i++;
+                    };
+                    cache()->put("current_row_{$this->id}", $i, 60 * 60 * 24);
+                    continue;
                 } else {
-                    $i = (int) cache("current_row_{$this->id}");
                     $i++;
-                };
-                cache()->put("current_row_{$this->id}", $i, 60 * 60 * 24);
-                continue;
-            } else {
-                $i++;
-                cache()->put("current_row_{$this->id}", $i, 60 * 60 * 24);
-            }
-
-            if (trim($row[0]) == "дни") {
-                $position = 0;
-                $this->date = null;
-                continue;
-            }
-
-            if (isset($row[1]) && empty($this->date)) {
-                $this->date = trim($row[1]);
-            }
-
-            if (isset($row[2])) {
-                $time = trim($row[2]);
-            }
-
-            if (isset($row[3]) && isset($row[4]) && isset($row[5]) && isset($row[6])) {
-                $lesson = trim($row[3]);
-                $teacherName = trim($row[4]);
-                $categoryName = trim($row[6]);
-                $room = trim($row[5]);
-
-                $teacher = Teacher::where('title', '=', $teacherName)->first();
-                if (empty($teacher)) {
-                    $teacher = Teacher::create([
-                        'title' => $teacherName,
-                    ]);
+                    cache()->put("current_row_{$this->id}", $i, 60 * 60 * 24);
                 }
-                $this->teacherId = $teacher->id;
 
-                $category = Category::where('title', '=', $categoryName)->first();
-                if (empty($category)) {
-                    $category = Category::create([
-                        'title' => $categoryName,
-                    ]);
+                if (trim($row[0]) == "дни") {
+                    $position = 0;
+                    $this->date = null;
+                    continue;
                 }
-                $this->categoryId = $category->id;
 
-                $this->check($this->groupId, $this->teacherId, $time, $this->date, $lesson, $room, $this->categoryId, $position); // проверка записи в базе
-            } else {
-                $schedule = Schedule::where('group_id', $this->groupId)
-                    ->where('date', $this->date)
-                    ->where('position', $position)
-                    ->first();
-                if (isset($schedule)) {
-                    $this->delete($schedule->id);
+                if (isset($row[1]) && empty($this->date)) {
+                    $this->date = str_replace(' ', '', $row[1]);
                 }
+
+                if (isset($row[2])) {
+                    $time = trim($row[2]);
+                }
+
+                if (isset($row[3]) && isset($row[4]) && isset($row[5]) && isset($row[6])) {
+                    $lesson = trim($row[3]);
+                    $teacherName = trim($row[4]);
+                    $categoryName = trim($row[6]);
+                    $room = trim($row[5]);
+
+                    $teacher = Teacher::where('title', '=', $teacherName)->first();
+                    if (empty($teacher)) {
+                        $teacher = Teacher::create([
+                            'title' => $teacherName,
+                        ]);
+                    }
+                    $this->teacherId = $teacher->id;
+
+                    $category = Category::where('title', '=', $categoryName)->first();
+                    if (empty($category)) {
+                        $category = Category::create([
+                            'title' => $categoryName,
+                        ]);
+                    }
+                    $this->categoryId = $category->id;
+
+                    $this->check($this->groupId, $this->teacherId, $time, $this->date, $lesson, $room, $this->categoryId, $position); // проверка записи в базе
+                } else {
+                    $schedule = Schedule::where('group_id', $this->groupId)
+                        ->where('date', $this->date)
+                        ->where('position', $position)
+                        ->first();
+                    if (isset($schedule)) {
+                        $this->delete($schedule->id);
+                    }
+                }
+
+                $position++;
             }
-
-            $position++;
+        } catch (\Exception $e) {
+            cache()->put("errors_{$this->id}", $e->getMessage());
+            throw new \Exception('Ошибка при обработке коллекции: ' . $e->getMessage());
         }
     }
 }

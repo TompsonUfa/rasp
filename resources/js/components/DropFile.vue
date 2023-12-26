@@ -2,22 +2,23 @@
     <div class="dropzone dropzone-container">
         <h1 class="dropzone__title">Загрузка расписания</h1>
         <input @change="this.handleFileUpload" type="file" name="files" multiple="multiple" id="fileInput"
-            class="dropzone__hidden-input" />
+               class="dropzone__hidden-input"/>
         <div class="dropzone__filters">
             <div class="dropzone__wrap-filter" v-for="filter in filters" :key="filter.id">
-                <input class="dropzone__filter" type="radio" :id="'filter' + filter.id" name="filter" :value=filter.value
-                    :checked="activeFilter == 'false' && filter.id == 1" />
+                <input class="dropzone__filter" type="radio" :id="'filter' + filter.id" name="filter"
+                       :value=filter.value
+                       v-model="this.activeFilter"/>
                 <label :for="'filter' + filter.id">{{ filter.name }}</label>
                 <div class="dropzone__filter-btn" @click="toggleFilters(filter)">
                     <svg height="64px" width="64px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 310.277 310.277" xml:space="preserve"
-                        fill="#000000">
+                         xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 310.277 310.277" xml:space="preserve"
+                         fill="#000000">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                         <g id="SVGRepo_iconCarrier">
                             <g>
                                 <path style="fill:#010002;"
-                                    d="M155.139,0C69.598,0,0,69.598,0,155.139c0,85.547,69.598,155.139,155.139,155.139 s155.139-69.592,155.139-155.139C310.283,69.592,240.686,0,155.139,0z M149.291,227.815c-7.309,0-12.322-5.639-12.322-12.948 c0-7.727,5.227-13.157,12.536-13.157c7.315,0,12.322,5.43,12.322,13.157C161.822,222.176,157.018,227.815,149.291,227.815z M169.549,149.494c-9.183,10.86-12.53,20.049-11.904,30.706l0.209,5.43h-16.29l-0.418-5.43 c-1.253-11.283,2.506-23.599,12.954-36.135c9.404-11.069,14.625-19.219,14.625-28.617c0-10.651-6.689-17.751-19.852-17.96 c-7.518,0-15.872,2.506-21.093,6.474l-5.012-13.157c6.892-5.012,18.796-8.354,29.87-8.354c24.023,0,34.882,14.828,34.882,30.706 C187.521,127.357,179.579,137.59,169.549,149.494z">
+                                      d="M155.139,0C69.598,0,0,69.598,0,155.139c0,85.547,69.598,155.139,155.139,155.139 s155.139-69.592,155.139-155.139C310.283,69.592,240.686,0,155.139,0z M149.291,227.815c-7.309,0-12.322-5.639-12.322-12.948 c0-7.727,5.227-13.157,12.536-13.157c7.315,0,12.322,5.43,12.322,13.157C161.822,222.176,157.018,227.815,149.291,227.815z M169.549,149.494c-9.183,10.86-12.53,20.049-11.904,30.706l0.209,5.43h-16.29l-0.418-5.43 c-1.253-11.283,2.506-23.599,12.954-36.135c9.404-11.069,14.625-19.219,14.625-28.617c0-10.651-6.689-17.751-19.852-17.96 c-7.518,0-15.872,2.506-21.093,6.474l-5.012-13.157c6.892-5.012,18.796-8.354,29.87-8.354c24.023,0,34.882,14.828,34.882,30.706 C187.521,127.357,179.579,137.59,169.549,149.494z">
                                 </path>
                             </g>
                         </g>
@@ -31,8 +32,9 @@
                 </div>
             </div>
         </div>
-        <label for="fileInput" class="dropzone__file-label" :class="this.isDragging ? 'dropzone__file-label_active' : null"
-            @dragover="dragover" @dragleave="dragleave" @drop="drop">
+        <label for="fileInput" class="dropzone__file-label"
+               :class="this.isDragging ? 'dropzone__file-label_active' : null"
+               @dragover="dragover" @dragleave="dragleave" @drop="drop">
             <i class="bx bxs-cloud-upload"></i>
             <span v-if="this.isDragging == false">Выбрать файл для загрузки</span>
             <span v-if="this.isDragging">Отпустите, чтобы загрузить файлы</span>
@@ -43,14 +45,18 @@
                 <div class="file__info">
                     <div class="file__text">
                         <p class="file__name">{{ file.name }}</p>
-                        <p class="file__percent" v-if="file.loaded == false">
-                            {{ file.progress + "%" }}
+                        <p class="file__percent" v-if="file.loaded === false && file.errors === null ">
+                            {{file.progress + "%" }}
                         </p>
                     </div>
-                    <span v-if="file.loaded" class="file__size">{{
-                        file.size + " КБ"
-                    }}</span>
-                    <div class="progress-bar" v-if="file.loaded == false">
+                    <span v-if="file.loaded" class="file__size">
+                        {{file.size + " КБ"}}
+                    </span>
+                    <div class="file__errors" v-if="file.errors">
+                        Файл не загружен, произошла ошибка:<br>
+                        {{ file.errors }}
+                    </div>
+                    <div class="progress-bar" v-if="file.loaded === false && file.errors === null">
                         <div class="progress" :style="{ width: file.progress + '%' }"></div>
                     </div>
                 </div>
@@ -63,21 +69,40 @@
 </template>
 
 <script>
-import { uuid } from "vue3-uuid";
+import {uuid} from "vue3-uuid";
 import axios from "axios";
+
 export default {
     data() {
         return {
             files: [],
             filters: [
                 {
-                    id: 1, name: "Все листы", value: false, open: false, desc: { name: "Будут импортированны все листы файла.", items: ["Макс. 50 листов "] }
+                    id: 1,
+                    name: "Все листы",
+                    value: false,
+                    open: false,
+                    desc: {
+                        name: "Будут импортированны все листы файла.",
+                        items: ["Макс. 50 листов"]
+                    }
                 },
                 {
-                    id: 2, name: "По фильтру", value: true, open: false, desc: { name: "Будут импортированны по следующим фильтрам:", items: ["Текущ. неделя: dd.mm - dd.mm.YYYY", "След. неделя: dd.mm - dd.mm.YYYY", "Лист с им. Активный"] }
+                    id: 2,
+                    name: "По фильтру",
+                    value: true,
+                    open: false,
+                    desc: {
+                        name: "Будут импортированны по следующим фильтрам:",
+                        items: [
+                            "Текущ. неделя: dd.mm - dd.mm.YYYY",
+                            "След. неделя: dd.mm - dd.mm.YYYY",
+                            "Лист с им. Активный",
+                        ]
+                    }
                 },
             ],
-            activeFilter: "false",
+            activeFilter: false,
             isDragging: false,
         };
     },
@@ -96,7 +121,7 @@ export default {
         },
         handleFileUpload(event) {
             let files;
-            if (event.target == undefined) {
+            if (event.target === undefined) {
                 files = event.files;
             } else {
                 files = event.target.files;
@@ -109,6 +134,7 @@ export default {
                     size: Math.ceil(files[i].size / 1024),
                     progress: 0,
                     loaded: false,
+                    errors: null,
                 };
                 this.files.push(fileObject);
             }
@@ -117,7 +143,7 @@ export default {
         async submitFile() {
             let self = this;
             for (let i = 0; i < this.files.length; i++) {
-                if (this.files[i].loaded == false) {
+                if (this.files[i].loaded === false) {
                     let formData = new FormData();
                     formData.append("file", this.files[i].file);
                     formData.append("uuid", this.files[i].uuid);
@@ -134,7 +160,7 @@ export default {
                         .then((res) => {
                             console.log(res);
                         })
-                        .catch((err) => {
+                        .catch(err => {
                             console.log(err);
                         });
                 }
@@ -142,9 +168,13 @@ export default {
         },
         async getData(file) {
             while (true) {
-                const { data } = await axios.get(
+                const {data} = await axios.get(
                     "/admin/import-status/" + file.uuid
                 );
+                if (data.errors) {
+                    file.errors = data.errors;
+                    break;
+                }
                 if (data.finished) {
                     file.progress = 100;
                     file.loaded = true;
@@ -160,7 +190,7 @@ export default {
         },
         toggleFilters(selectFilter) {
             this.filters.forEach(filter => {
-                if (filter == selectFilter) {
+                if (filter === selectFilter) {
                     filter.open = !filter.open;
                 } else {
                     filter.open = false;
@@ -318,6 +348,12 @@ export default {
         i {
             font-size: 30px;
         }
+    }
+    &__errors {
+        background: var(--first-color-alt);
+        padding: 10px;
+        color: #fff;
+        border-radius: 5px;
     }
 }
 
